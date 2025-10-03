@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigapi", "src\Sigapi\Sigapi.csproj", "{EE592BD0-7516-4859-B8E3-B1901540885C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigapi.UnitTests", "tests\Sigapi.UnitTests\Sigapi.UnitTests.csproj", "{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE592BD0-7516-4859-B8E3-B1901540885C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE592BD0-7516-4859-B8E3-B1901540885C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE592BD0-7516-4859-B8E3-B1901540885C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE592BD0-7516-4859-B8E3-B1901540885C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal

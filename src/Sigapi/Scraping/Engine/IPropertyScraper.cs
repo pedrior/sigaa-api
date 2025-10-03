@@ -1,0 +1,11 @@
+﻿using Sigapi.Scraping.Configuration;
+using Sigapi.Scraping.Document;
+
+namespace Sigapi.Scraping.Engine;
+
+internal interface IPropertyScraper
+{
+    bool Evaluate(PropertyScrapingConfiguration config);
+    
+    void Execute(object model, PropertyScrapingConfiguration config, IHtmlElement parent);
+}
