@@ -22,6 +22,7 @@ using Sigapi.Scraping.Configuration;
 using Sigapi.Scraping.Converters;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
+using Sigapi.Scraping.Engine.Strategies;
 using Sigapi.Scraping.Networking;
 using Sigapi.Scraping.Networking.Redirection;
 using Sigapi.Scraping.Networking.Sessions;

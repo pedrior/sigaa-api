@@ -2,7 +2,7 @@
 using Sigapi.Scraping.Converters;
 using Sigapi.Scraping.Document;
 
-namespace Sigapi.Scraping.Engine;
+namespace Sigapi.Scraping.Engine.Strategies;
 
 internal abstract class PropertyScraper<TConfig> : IPropertyScraper where TConfig : PropertyScrapingConfiguration
 {
