@@ -45,10 +45,45 @@ internal sealed partial class Element : IHtmlElement
             : new Element(result);
     }
 
+    public IHtmlElement? QueryNextSibling(string selector)
+    {
+        var sibling = element.NextElementSibling;
+        
+        while (sibling is not null)
+        {
+            if (sibling.Matches(selector))
+            {
+                return new Element(sibling);
+            }
+            
+            sibling = sibling.NextElementSibling;
+        }
+
+        return null;
+    }
+    
     public IEnumerable<IHtmlElement> QueryAll(string selector)
     {
         return element.QuerySelectorAll(selector)
             .Select(e => new Element(e));
+    }
+    
+    public IEnumerable<IHtmlElement> QueryAllNextSiblings(string selector)
+    {
+        var siblings = new List<IHtmlElement>();
+        var sibling = element.NextElementSibling;
+        
+        while (sibling is not null)
+        {
+            if (sibling.Matches(selector))
+            {
+                siblings.Add(new Element(sibling));
+            }
+            
+            sibling = sibling.NextElementSibling;
+        }
+
+        return siblings;
     }
 
     [GeneratedRegex(@"\s+")]

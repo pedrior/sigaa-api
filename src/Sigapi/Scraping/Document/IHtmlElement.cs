@@ -8,5 +8,9 @@ internal interface IHtmlElement
     
     IHtmlElement? Query(string selector);
     
+    IHtmlElement? QueryNextSibling(string selector);
+    
     IEnumerable<IHtmlElement> QueryAll(string selector);
+    
+    IEnumerable<IHtmlElement> QueryAllNextSiblings(string selector);
 }

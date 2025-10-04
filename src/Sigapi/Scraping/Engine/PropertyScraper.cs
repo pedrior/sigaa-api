@@ -25,11 +25,37 @@ internal abstract class PropertyScraper<TConfig> : IPropertyScraper where TConfi
 
     protected abstract void ProcessProperty(object model, TConfig config, IHtmlElement parent);
 
-    protected static IHtmlElement? ResolveElement(IHtmlElement element, string? selector)
+    protected static IHtmlElement? ResolveElement(IHtmlElement element, PropertyScrapingConfiguration config)
     {
-        return string.IsNullOrWhiteSpace(selector)
-            ? element
-            : element.Query(selector);
+        var selector = config.Selector;
+        if (string.IsNullOrWhiteSpace(selector))
+        {
+            // When the selector is empty, it refers to the element itself, regardless of the strategy.
+            return element;
+        }
+
+        return config.SelectorStrategy switch
+        {
+            SelectorStrategy.Nested => element.Query(selector),
+            SelectorStrategy.Sibling => element.QueryNextSibling(selector),
+            _ => throw new NotSupportedException($"Selector strategy '{config.SelectorStrategy}' is not supported.")
+        };
+    }
+    
+    protected static IEnumerable<IHtmlElement> ResolveElements(IHtmlElement element, PropertyScrapingConfiguration config)
+    {
+        var selector = config.Selector;
+        if (string.IsNullOrWhiteSpace(selector))
+        {
+            return [element];
+        }
+
+        return config.SelectorStrategy switch
+        {
+            SelectorStrategy.Nested => element.QueryAll(selector),
+            SelectorStrategy.Sibling => element.QueryAllNextSiblings(selector),
+            _ => throw new NotSupportedException($"Selector strategy '{config.SelectorStrategy}' is not supported.")
+        };
     }
 
     protected static string? ExtractRawValue(IHtmlElement? element, string? attribute)
