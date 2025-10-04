@@ -13,4 +13,9 @@ internal static class CachePolicies
         
         public const string ListCenters = "centers:list-centers";
     }
+
+    internal static class Departments
+    {
+        public const string ListDepartments = "departments:list-departments";
+    }
 }
