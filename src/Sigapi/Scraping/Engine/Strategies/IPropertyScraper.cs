@@ -1,7 +1,7 @@
 ﻿using Sigapi.Scraping.Configuration;
 using Sigapi.Scraping.Document;
 
-namespace Sigapi.Scraping.Engine;
+namespace Sigapi.Scraping.Engine.Strategies;
 
 internal interface IPropertyScraper
 {

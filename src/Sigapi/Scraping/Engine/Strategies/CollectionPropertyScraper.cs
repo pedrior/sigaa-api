@@ -4,7 +4,7 @@ using Sigapi.Scraping.Converters;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Exceptions;
 
-namespace Sigapi.Scraping.Engine;
+namespace Sigapi.Scraping.Engine.Strategies;
 
 internal sealed class CollectionPropertyScraper : PropertyScraper<CollectionPropertyScrapingConfiguration>
 {

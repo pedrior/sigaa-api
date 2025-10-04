@@ -1,5 +1,6 @@
 ﻿using Sigapi.Scraping.Configuration;
 using Sigapi.Scraping.Document;
+using Sigapi.Scraping.Engine.Strategies;
 
 namespace Sigapi.Scraping.Engine;
 

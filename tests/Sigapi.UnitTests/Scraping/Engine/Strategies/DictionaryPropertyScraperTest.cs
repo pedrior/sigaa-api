@@ -2,6 +2,7 @@
 using Sigapi.Scraping.Converters;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
+using Sigapi.Scraping.Engine.Strategies;
 
 namespace Sigapi.UnitTests.Scraping.Engine.Strategies;
 
