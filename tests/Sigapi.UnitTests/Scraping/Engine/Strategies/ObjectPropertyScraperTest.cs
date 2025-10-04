@@ -11,7 +11,7 @@ public sealed class ObjectPropertyScraperTest
 {
     private readonly IConversionService conversionService = A.Fake<IConversionService>();
     private readonly IModelScraperFactory modelScraperFactory = A.Fake<IModelScraperFactory>();
-    private readonly IHtmlElement rootElement = A.Fake<IHtmlElement>();
+    private readonly IElement rootElement = A.Fake<IElement>();
 
     private readonly ObjectPropertyScraper sut;
 
@@ -32,7 +32,7 @@ public sealed class ObjectPropertyScraperTest
             Selector = ".nested-data"
         };
 
-        var nestedElement1 = A.Fake<IHtmlElement>();
+        var nestedElement1 = A.Fake<IElement>();
         var nestedScraper2 = A.Fake<IModelScraper>();
 
         var expectedNestedModel = new TestNestedModel

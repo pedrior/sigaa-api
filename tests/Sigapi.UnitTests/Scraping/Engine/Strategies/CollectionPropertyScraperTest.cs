@@ -11,7 +11,7 @@ public sealed class CollectionPropertyScraperTest
 {
     private readonly IConversionService conversionService = A.Fake<IConversionService>();
     private readonly IModelScraperFactory modelScraperFactory = A.Fake<IModelScraperFactory>();
-    private readonly IHtmlElement rootElement = A.Fake<IHtmlElement>();
+    private readonly IElement rootElement = A.Fake<IElement>();
 
     private readonly CollectionPropertyScraper sut;
 
@@ -33,8 +33,8 @@ public sealed class CollectionPropertyScraperTest
             Selector = ".item"
         };
 
-        var element1 = A.Fake<IHtmlElement>();
-        var element2 = A.Fake<IHtmlElement>();
+        var element1 = A.Fake<IElement>();
+        var element2 = A.Fake<IElement>();
 
         A.CallTo(() => element1.GetText()).Returns("First");
         A.CallTo(() => element2.GetText()).Returns("Second");
@@ -65,8 +65,8 @@ public sealed class CollectionPropertyScraperTest
             Selector = ".nested-item"
         };
 
-        var element1 = A.Fake<IHtmlElement>();
-        var element2 = A.Fake<IHtmlElement>();
+        var element1 = A.Fake<IElement>();
+        var element2 = A.Fake<IElement>();
         var nestedModel1 = new TestNestedModel { Value = "A" };
         var nestedModel2 = new TestNestedModel { Value = "B" };
 

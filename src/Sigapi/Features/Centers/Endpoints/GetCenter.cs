@@ -158,7 +158,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
         };
     }
 
-    private static async Task<IHtmlElement> FetchPageAsync(IPageFetcher pageFetcher,
+    private static async Task<IElement> FetchPageAsync(IPageFetcher pageFetcher,
         string url,
         CancellationToken cancellationToken)
     {

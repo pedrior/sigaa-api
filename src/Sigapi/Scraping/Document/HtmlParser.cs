@@ -12,6 +12,6 @@ internal sealed class HtmlParser : IHtmlParser
         IsPreservingAttributeNames = true
     });
 
-    public async Task<IHtmlElement> ParseAsync(Uri url, string html, CancellationToken cancellationToken = default) =>
+    public async Task<IElement> ParseAsync(Uri url, string html, CancellationToken cancellationToken = default) =>
         new Element(await parser.ParseDocumentAsync(html, cancellationToken), url.AbsoluteUri);
 }

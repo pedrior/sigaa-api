@@ -15,7 +15,7 @@ internal abstract class PropertyScraper<TConfig> : IPropertyScraper where TConfi
 
     public bool Evaluate(PropertyScrapingConfiguration config) => config is TConfig;
 
-    public void Execute(object model, PropertyScrapingConfiguration config, IHtmlElement parent)
+    public void Execute(object model, PropertyScrapingConfiguration config, IElement parent)
     {
         if (config is TConfig typedConfig)
         {
@@ -23,9 +23,9 @@ internal abstract class PropertyScraper<TConfig> : IPropertyScraper where TConfi
         }
     }
 
-    protected abstract void ProcessProperty(object model, TConfig config, IHtmlElement parent);
+    protected abstract void ProcessProperty(object model, TConfig config, IElement parent);
 
-    protected static IHtmlElement? ResolveElement(IHtmlElement element, PropertyScrapingConfiguration config)
+    protected static IElement? ResolveElement(IElement element, PropertyScrapingConfiguration config)
     {
         var selector = config.Selector;
         if (string.IsNullOrWhiteSpace(selector))
@@ -42,7 +42,7 @@ internal abstract class PropertyScraper<TConfig> : IPropertyScraper where TConfi
         };
     }
     
-    protected static IEnumerable<IHtmlElement> ResolveElements(IHtmlElement element, PropertyScrapingConfiguration config)
+    protected static IEnumerable<IElement> ResolveElements(IElement element, PropertyScrapingConfiguration config)
     {
         var selector = config.Selector;
         if (string.IsNullOrWhiteSpace(selector))
@@ -58,7 +58,7 @@ internal abstract class PropertyScraper<TConfig> : IPropertyScraper where TConfi
         };
     }
 
-    protected static string? ExtractRawValue(IHtmlElement? element, string? attribute)
+    protected static string? ExtractRawValue(IElement? element, string? attribute)
     {
         if (element is null)
         {

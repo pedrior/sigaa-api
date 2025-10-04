@@ -15,7 +15,7 @@ internal sealed class ModelScraper<TModel> : IModelScraper<TModel> where TModel 
         this.configProvider = configProvider;
     }
 
-    public TModel Scrape(IHtmlElement element)
+    public TModel Scrape(IElement element)
     {
         var model = new TModel();
         var config = configProvider.GetConfiguration<TModel>();
@@ -29,5 +29,5 @@ internal sealed class ModelScraper<TModel> : IModelScraper<TModel> where TModel 
         return model;
     }
 
-    object IModelScraper.Scrape(IHtmlElement element) => Scrape(element);
+    object IModelScraper.Scrape(IElement element) => Scrape(element);
 }

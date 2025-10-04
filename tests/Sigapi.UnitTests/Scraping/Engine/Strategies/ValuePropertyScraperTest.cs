@@ -11,7 +11,7 @@ namespace Sigapi.UnitTests.Scraping.Engine.Strategies;
 public sealed class ValuePropertyScraperTest
 {
     private readonly IConversionService conversionService = A.Fake<IConversionService>();
-    private readonly IHtmlElement rootElement = A.Fake<IHtmlElement>();
+    private readonly IElement rootElement = A.Fake<IElement>();
 
     private readonly ValuePropertyScraper sut;
 
@@ -31,7 +31,7 @@ public sealed class ValuePropertyScraperTest
             Selector = ".name"
         };
 
-        var element = A.Fake<IHtmlElement>();
+        var element = A.Fake<IElement>();
 
         A.CallTo(() => element.GetText()).Returns("John Doe");
         A.CallTo(() => rootElement.Query(".name")).Returns(element);
@@ -56,7 +56,7 @@ public sealed class ValuePropertyScraperTest
             Attribute = "href"
         };
 
-        var element = A.Fake<IHtmlElement>();
+        var element = A.Fake<IElement>();
 
         A.CallTo(() => element.GetAttribute("href")).Returns("/profile");
         A.CallTo(() => rootElement.Query("a")).Returns(element);
@@ -85,7 +85,7 @@ public sealed class ValuePropertyScraperTest
             Transformations = { transform1, transform2 }
         };
 
-        var fakeNameElement = A.Fake<IHtmlElement>();
+        var fakeNameElement = A.Fake<IElement>();
         A.CallTo(() => fakeNameElement.GetText()).Returns("  raw value  ");
         A.CallTo(() => rootElement.Query(".name")).Returns(fakeNameElement);
 
@@ -157,7 +157,7 @@ public sealed class ValuePropertyScraperTest
             SelectorStrategy = SelectorStrategy.Sibling
         };
 
-        var siblingElement = A.Fake<IHtmlElement>();
+        var siblingElement = A.Fake<IElement>();
 
         A.CallTo(() => siblingElement.GetText()).Returns("Sibling Name");
         A.CallTo(() => rootElement.QueryNextSibling(".sibling-name")).Returns(siblingElement);

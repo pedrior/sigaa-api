@@ -16,7 +16,7 @@ internal sealed class ObjectPropertyScraper : PropertyScraper<ObjectPropertyScra
 
     protected override void ProcessProperty(object model,
         ObjectPropertyScrapingConfiguration config,
-        IHtmlElement parent)
+        IElement parent)
     {
         var element = ResolveElement(parent, config);
         if (element is null)

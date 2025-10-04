@@ -12,7 +12,7 @@ internal sealed class ValuePropertyScraper : PropertyScraper<ValuePropertyScrapi
 
     protected override void ProcessProperty(object model,
         ValuePropertyScrapingConfiguration config,
-        IHtmlElement parent)
+        IElement parent)
     {
         var element = ResolveElement(parent, config);
         if (element is null)

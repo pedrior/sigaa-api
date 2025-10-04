@@ -1,13 +1,12 @@
 ﻿using System.Text.RegularExpressions;
-using AngleSharp.Dom;
 
 namespace Sigapi.Scraping.Document;
 
-internal sealed partial class Element : IHtmlElement
+internal sealed partial class Element : IElement
 {
-    private readonly IElement element;
+    private readonly AngleSharp.Dom.IElement element;
 
-    public Element(IElement element)
+    public Element(AngleSharp.Dom.IElement element)
     {
         this.element = element;
     }
@@ -37,7 +36,7 @@ internal sealed partial class Element : IHtmlElement
 
     public string? GetAttribute(string name) => element.GetAttribute(name);
 
-    public IHtmlElement? Query(string selector)
+    public IElement? Query(string selector)
     {
         var result = element.QuerySelector(selector);
         return result is null
@@ -45,7 +44,7 @@ internal sealed partial class Element : IHtmlElement
             : new Element(result);
     }
 
-    public IHtmlElement? QueryNextSibling(string selector)
+    public IElement? QueryNextSibling(string selector)
     {
         var sibling = element.NextElementSibling;
         
@@ -62,13 +61,13 @@ internal sealed partial class Element : IHtmlElement
         return null;
     }
     
-    public IEnumerable<IHtmlElement> QueryAll(string selector)
+    public IEnumerable<IElement> QueryAll(string selector)
     {
         return element.QuerySelectorAll(selector)
             .Select(e => new Element(e));
     }
     
-    public IEnumerable<IHtmlElement> QueryAllNextSiblings(string selector)
+    public IEnumerable<IElement> QueryAllNextSiblings(string selector)
     {
         var sibling = element.NextElementSibling;
         

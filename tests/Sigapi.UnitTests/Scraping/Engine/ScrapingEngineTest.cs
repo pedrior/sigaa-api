@@ -11,14 +11,14 @@ public sealed class ScrapingEngineTests
 {
     private readonly IModelScraperFactory modelScraperFactory;
     private readonly IScrapingModelConfigurationProvider configProvider;
-    private readonly IHtmlElement rootElement;
+    private readonly IElement rootElement;
     private readonly ScrapingEngine sut;
 
     public ScrapingEngineTests()
     {
         modelScraperFactory = A.Fake<IModelScraperFactory>();
         configProvider = A.Fake<IScrapingModelConfigurationProvider>();
-        rootElement = A.Fake<IHtmlElement>();
+        rootElement = A.Fake<IElement>();
 
         sut = new ScrapingEngine(A.Fake<ILogger<ScrapingEngine>>(), modelScraperFactory, configProvider);
     }
@@ -32,7 +32,7 @@ public sealed class ScrapingEngineTests
             new ReadOnlyCollection<PropertyScrapingConfiguration>(new List<PropertyScrapingConfiguration>()));
 
         var modelScraper = A.Fake<IModelScraper<TestModel>>();
-        var contentElement = A.Fake<IHtmlElement>();
+        var contentElement = A.Fake<IElement>();
 
         var expectedModel = new TestModel
         {
@@ -106,8 +106,8 @@ public sealed class ScrapingEngineTests
 
         var modelScraper = A.Fake<IModelScraper<TestModel>>();
 
-        var element1 = A.Fake<IHtmlElement>();
-        var element2 = A.Fake<IHtmlElement>();
+        var element1 = A.Fake<IElement>();
+        var element2 = A.Fake<IElement>();
 
         var model1 = new TestModel { Data = "A" };
         var model2 = new TestModel { Data = "B" };

@@ -4,9 +4,9 @@ namespace Sigapi.Scraping.Document;
 
 internal sealed class Document : IDocument
 {
-    private readonly IHtmlElement root;
+    private readonly IElement root;
     
-    public Document(IHtmlElement root, Uri url, ISession? session)
+    public Document(IElement root, Uri url, ISession? session)
     {
          this.root = root;
          
@@ -22,11 +22,11 @@ internal sealed class Document : IDocument
 
     public string? GetAttribute(string name) => root.GetAttribute(name);
 
-    public IHtmlElement? Query(string selector) => root.Query(selector);
+    public IElement? Query(string selector) => root.Query(selector);
 
-    public IHtmlElement? QueryNextSibling(string selector) => root.QueryNextSibling(selector);
+    public IElement? QueryNextSibling(string selector) => root.QueryNextSibling(selector);
 
-    public IEnumerable<IHtmlElement> QueryAll(string selector) => root.QueryAll(selector);
+    public IEnumerable<IElement> QueryAll(string selector) => root.QueryAll(selector);
     
-    public IEnumerable<IHtmlElement> QueryAllNextSiblings(string selector) => root.QueryAllNextSiblings(selector);
+    public IEnumerable<IElement> QueryAllNextSiblings(string selector) => root.QueryAllNextSiblings(selector);
 }

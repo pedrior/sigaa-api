@@ -7,5 +7,5 @@ internal interface IPropertyScraper
 {
     bool Evaluate(PropertyScrapingConfiguration config);
     
-    void Execute(object model, PropertyScrapingConfiguration config, IHtmlElement parent);
+    void Execute(object model, PropertyScrapingConfiguration config, IElement parent);
 }

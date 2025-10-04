@@ -14,7 +14,7 @@ internal sealed class DictionaryPropertyScraper : PropertyScraper<DictionaryProp
 
     protected override void ProcessProperty(object model,
         DictionaryPropertyScrapingConfiguration config,
-        IHtmlElement parent)
+        IElement parent)
     {
         var elements = ResolveElements(parent, config).ToArray();
         if (elements is [])

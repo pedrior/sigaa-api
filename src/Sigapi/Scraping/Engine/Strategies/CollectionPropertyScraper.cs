@@ -18,7 +18,7 @@ internal sealed class CollectionPropertyScraper : PropertyScraper<CollectionProp
 
     protected override void ProcessProperty(object model,
         CollectionPropertyScrapingConfiguration config,
-        IHtmlElement parent)
+        IElement parent)
     {
         var list = CreateListInstance(config.ItemType);
         var isPrimitiveType = config.ItemType.IsPrimitive || config.ItemType == typeof(string);

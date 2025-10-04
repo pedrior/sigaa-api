@@ -10,7 +10,7 @@ namespace Sigapi.UnitTests.Scraping.Engine.Strategies;
 public sealed class DictionaryPropertyScraperTest
 {
     private readonly IConversionService conversionService = A.Fake<IConversionService>();
-    private readonly IHtmlElement rootElement = A.Fake<IHtmlElement>();
+    private readonly IElement rootElement = A.Fake<IElement>();
 
     private readonly DictionaryPropertyScraper sut;
 
@@ -35,8 +35,8 @@ public sealed class DictionaryPropertyScraperTest
             ValueType = typeof(string)
         };
 
-        var element1 = A.Fake<IHtmlElement>();
-        var element2 = A.Fake<IHtmlElement>();
+        var element1 = A.Fake<IElement>();
+        var element2 = A.Fake<IElement>();
         
         A.CallTo(() => element1.GetAttribute("data-key")).Returns("Color");
         A.CallTo(() => element1.GetAttribute("data-value")).Returns("Blue");

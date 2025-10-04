@@ -18,7 +18,7 @@ internal sealed class ScrapingEngine : IScrapingEngine
         this.configProvider = configProvider;
     }
 
-    public TModel Scrape<TModel>(IHtmlElement root) where TModel : class, new()
+    public TModel Scrape<TModel>(IElement root) where TModel : class, new()
     {
         var scraper = modelScraperFactory.CreateScraper<TModel>();
         var config = configProvider.GetConfiguration<TModel>();
@@ -26,7 +26,7 @@ internal sealed class ScrapingEngine : IScrapingEngine
         return scraper.Scrape(ResolveRootElement(root, config.Selector));
     }
 
-    public async Task<IReadOnlyCollection<TModel>> ScrapeAllAsync<TModel>(IHtmlElement root,
+    public async Task<IReadOnlyCollection<TModel>> ScrapeAllAsync<TModel>(IElement root,
         CancellationToken cancellationToken = default) where TModel : class, new()
     {
         var config = configProvider.GetConfiguration<TModel>();
@@ -61,7 +61,7 @@ internal sealed class ScrapingEngine : IScrapingEngine
         return results.AsReadOnly();
     }
 
-    private static IHtmlElement ResolveRootElement(IHtmlElement root, string? rootSelector)
+    private static IElement ResolveRootElement(IElement root, string? rootSelector)
     {
         var element = rootSelector is null
             ? root
