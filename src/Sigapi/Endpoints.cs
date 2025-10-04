@@ -31,7 +31,7 @@ internal static class Endpoints
 
     private static void MapCenterEndpoints(this IEndpointRouteBuilder route)
     {
-        var group = route.MapGroup("centers")
+        var group = route.MapPublicGroup("centers")
             .WithTags(Tags.Centers);
 
         group.MapEndpoint<GetCenterEndpoint>()
