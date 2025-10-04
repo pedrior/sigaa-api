@@ -70,20 +70,17 @@ internal sealed partial class Element : IHtmlElement
     
     public IEnumerable<IHtmlElement> QueryAllNextSiblings(string selector)
     {
-        var siblings = new List<IHtmlElement>();
         var sibling = element.NextElementSibling;
         
         while (sibling is not null)
         {
             if (sibling.Matches(selector))
             {
-                siblings.Add(new Element(sibling));
+                yield return new Element(sibling);
             }
             
             sibling = sibling.NextElementSibling;
         }
-
-        return siblings;
     }
 
     [GeneratedRegex(@"\s+")]
