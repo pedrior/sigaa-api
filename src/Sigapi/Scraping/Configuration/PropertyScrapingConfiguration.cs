@@ -12,9 +12,5 @@ internal abstract record PropertyScrapingConfiguration(PropertyInfo Property)
     
     public virtual void Validate()
     {
-        if (string.IsNullOrWhiteSpace(Selector))
-        {
-            throw new InvalidConfigurationException($"Selector must be provided for property '{Property.Name}'.");
-        }
     }
 }
