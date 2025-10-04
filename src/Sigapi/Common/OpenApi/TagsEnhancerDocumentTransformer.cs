@@ -13,6 +13,8 @@ internal sealed class TagsEnhancerDocumentTransformer : IOpenApiDocumentTransfor
                          "pessoais do estudante autenticado.",
         [Tags.Centers] = "Endpoints para obter informações sobre os centros acadêmicos, incluindo listagem e perfis " +
                          "detalhados com seus respectivos cursos, programas e departamentos.",
+        [Tags.Departments] = "Endpoints para acessar informações sobre os departamentos acadêmicos, incluindo " +
+                             "listagem e consultas detalhadas."
     }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
     public Task TransformAsync(OpenApiDocument document,

@@ -2,6 +2,7 @@
 using Sigapi.Common.OpenApi.Constants;
 using Sigapi.Features.Account.Endpoints;
 using Sigapi.Features.Centers.Endpoints;
+using Sigapi.Features.Departments.Endpoints;
 
 namespace Sigapi;
 
@@ -14,6 +15,7 @@ internal static class Endpoints
 
         root.MapAccountEndpoints();
         root.MapCenterEndpoints();
+        root.MapDepartmentEndpoints();
     }
 
     private static void MapAccountEndpoints(this IEndpointRouteBuilder route)
@@ -38,6 +40,13 @@ internal static class Endpoints
             .MapEndpoint<ListCentersEndpoint>();
     }
     
+    private static void MapDepartmentEndpoints(this IEndpointRouteBuilder route)
+    {
+        var group = route.MapPublicGroup("departments")
+            .WithTags(Tags.Departments);
+
+        group.MapEndpoint<ListDepartmentsEndpoint>();
+    }
 
     private static RouteGroupBuilder MapPublicGroup(this IEndpointRouteBuilder route, string? prefix = null) =>
         route.MapGroupWithDefaults(prefix ?? string.Empty)
