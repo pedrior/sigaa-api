@@ -27,9 +27,7 @@ internal sealed class CollectionPropertyScraper : PropertyScraper<CollectionProp
             ? null
             : modelScraperFactory.CreateScraper(config.ItemType);
 
-        var elements = parent.QueryAll(config.Selector)
-            .ToArray();
-
+        var elements = ResolveElements(parent, config).ToArray();
         if (elements is [])
         {
             return;

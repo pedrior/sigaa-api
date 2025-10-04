@@ -143,4 +143,32 @@ public sealed class ValuePropertyScraperTest
         // Assert
         model.Age.Should().Be(25);
     }
+    
+    [Fact]
+    public void Execute_WhenSelectorStrategyIsSibling_ShouldQueryNextSibling()
+    {
+        // Arrange
+        var model = new TestModel();
+        var property = typeof(TestModel).GetProperty(nameof(TestModel.Name))!;
+        var config = new ValuePropertyScrapingConfiguration(property)
+        {
+            Selector = ".sibling-name",
+            SelectorStrategy = SelectorStrategy.Sibling
+        };
+
+        var siblingElement = A.Fake<IHtmlElement>();
+
+        A.CallTo(() => siblingElement.GetText()).Returns("Sibling Name");
+        A.CallTo(() => rootElement.QueryNextSibling(".sibling-name")).Returns(siblingElement);
+        A.CallTo(() => conversionService.Convert(typeof(string), "Sibling Name", null)).Returns("Sibling Name");
+
+        // Act
+        sut.Execute(model, config, rootElement);
+
+        // Assert
+        model.Name.Should().Be("Sibling Name");
+        
+        A.CallTo(() => rootElement.Query(".sibling-name")).MustNotHaveHappened();
+        A.CallTo(() => rootElement.QueryNextSibling(".sibling-name")).MustHaveHappenedOnceExactly();
+    }
 }

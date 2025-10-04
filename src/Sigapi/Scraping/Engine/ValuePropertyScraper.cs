@@ -14,7 +14,7 @@ internal sealed class ValuePropertyScraper : PropertyScraper<ValuePropertyScrapi
         ValuePropertyScrapingConfiguration config,
         IHtmlElement parent)
     {
-        var element = ResolveElement(parent, config.Selector);
+        var element = ResolveElement(parent, config);
         if (element is null)
         {
             if (config.DefaultValue is not null)

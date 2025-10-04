@@ -16,9 +16,7 @@ internal sealed class DictionaryPropertyScraper : PropertyScraper<DictionaryProp
         DictionaryPropertyScrapingConfiguration config,
         IHtmlElement parent)
     {
-        var elements = parent.QueryAll(config.Selector)
-            .ToArray();
-
+        var elements = ResolveElements(parent, config).ToArray();
         if (elements is [])
         {
             return;

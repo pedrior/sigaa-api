@@ -49,6 +49,12 @@ internal sealed class CollectionPropertyBuilder<TModel, TValue> : IPropertyBuild
         return this;
     }
     
+    public CollectionPropertyBuilder<TModel, TValue> FromSibling(bool fromSibling = true)
+    {
+        config.SelectorStrategy = fromSibling ? SelectorStrategy.Sibling : SelectorStrategy.Nested;
+        return this;
+    }
+    
     PropertyScrapingConfiguration IPropertyBuilder.BuildConfiguration()
     {
         config.Validate();

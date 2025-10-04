@@ -18,7 +18,7 @@ internal sealed class ObjectPropertyScraper : PropertyScraper<ObjectPropertyScra
         ObjectPropertyScrapingConfiguration config,
         IHtmlElement parent)
     {
-        var element = ResolveElement(parent, config.Selector);
+        var element = ResolveElement(parent, config);
         if (element is null)
         {
             if (!config.IsOptional)

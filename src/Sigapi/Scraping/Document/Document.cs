@@ -24,5 +24,9 @@ internal sealed class Document : IDocument
 
     public IHtmlElement? Query(string selector) => root.Query(selector);
 
+    public IHtmlElement? QueryNextSibling(string selector) => root.QueryNextSibling(selector);
+
     public IEnumerable<IHtmlElement> QueryAll(string selector) => root.QueryAll(selector);
+    
+    public IEnumerable<IHtmlElement> QueryAllNextSiblings(string selector) => root.QueryAllNextSiblings(selector);
 }

@@ -83,6 +83,12 @@ internal sealed class DictionaryPropertyBuilder<TModel, TKey, TValue> : IPropert
         config.IsOptional = optional;
         return this;
     }
+    
+    public DictionaryPropertyBuilder<TModel, TKey, TValue> FromSibling(bool fromSibling = true)
+    {
+        config.SelectorStrategy = fromSibling ? SelectorStrategy.Sibling : SelectorStrategy.Nested;
+        return this;
+    }
 
     PropertyScrapingConfiguration IPropertyBuilder.BuildConfiguration()
     {

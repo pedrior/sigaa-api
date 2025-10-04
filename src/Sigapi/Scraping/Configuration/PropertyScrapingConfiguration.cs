@@ -8,6 +8,8 @@ internal abstract record PropertyScrapingConfiguration(PropertyInfo Property)
     
     public abstract bool IsOptional { get; set; }
     
+    public SelectorStrategy SelectorStrategy { get; set; } = SelectorStrategy.Nested;
+    
     public virtual void Validate()
     {
         if (string.IsNullOrWhiteSpace(Selector))
