@@ -2,16 +2,16 @@
 
 internal sealed class Document : IDocument
 {
+    private static readonly Uri Blank = new("about:blank"); 
+    
     private readonly IElement root;
     
-    public Document(IElement root, Uri url)
+    public Document(IElement root)
     {
          this.root = root;
-         
-         Url = url;
     }
-    
-    public Uri Url { get; }
+
+    public Uri Url { get; set; } = Blank;
 
     public string? GetText() => root.GetText();
 

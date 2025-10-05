@@ -19,9 +19,11 @@ internal sealed class PageFetcher : IPageFetcher
         CancellationToken cancellationToken = default)
     {
         var response = await httpFetcher.FetchAsync(url, session, cancellationToken);
+        var document = await htmlParser.ParseAsync(response.html, cancellationToken);
 
-        var root = await htmlParser.ParseAsync(response.url, response.html, cancellationToken);
-        return new Document.Document(root, response.url);
+        document.Url = response.url;
+
+        return document;
     }
 
     public async Task<IDocument> FetchAndParseWithFormSubmissionAsync(string url,
@@ -30,8 +32,10 @@ internal sealed class PageFetcher : IPageFetcher
         CancellationToken cancellationToken = default)
     {
         var response = await httpFetcher.FetchWithFormSubmissionAsync(url, data, session, cancellationToken);
+        var document = await htmlParser.ParseAsync(response.html, cancellationToken);
 
-        var root = await htmlParser.ParseAsync(response.url, response.html, cancellationToken);
-        return new Document.Document(root, response.url);
+        document.Url = response.url;
+
+        return document;
     }
 }

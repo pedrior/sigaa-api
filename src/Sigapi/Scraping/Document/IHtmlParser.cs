@@ -2,5 +2,5 @@
 
 internal interface IHtmlParser
 {
-    Task<IElement> ParseAsync(Uri url, string html, CancellationToken cancellationToken = default);
+    Task<IDocument> ParseAsync(string html, CancellationToken cancellationToken = default);
 }

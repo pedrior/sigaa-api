@@ -2,5 +2,5 @@
 
 internal interface IDocument : IElement
 {
-    public Uri Url { get; }
+    public Uri Url { get; internal set; }
 }

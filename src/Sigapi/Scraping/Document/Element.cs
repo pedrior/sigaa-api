@@ -6,21 +6,11 @@ internal sealed partial class Element : IElement
 {
     private readonly AngleSharp.Dom.IElement element;
 
-    public Element(AngleSharp.Dom.IElement element)
+    internal Element(AngleSharp.Dom.IElement element)
     {
         this.element = element;
     }
-
-    public Element(AngleSharp.Dom.IDocument document, string location) : this(document.DocumentElement)
-    {
-        IsRoot = true;
-        Location = location;
-    }
-
-    public bool IsRoot { get; }
-
-    public string? Location { get; set; }
-
+    
     public string? GetText()
     {
         var text = element.TextContent;
