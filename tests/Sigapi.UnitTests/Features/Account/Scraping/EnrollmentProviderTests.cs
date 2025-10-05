@@ -28,8 +28,7 @@ public class EnrollmentProviderTests
     {
         // Arrange
         var page = A.Fake<IDocument>();
-
-        A.CallTo(() => page.Session).Returns(session);
+        
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com/vinculos.jsf"));
 
         A.CallTo(() => pageFetcher.FetchAndParseAsync(

@@ -1,6 +1,7 @@
 ﻿using Sigapi.Features.Account.Exceptions;
 using Sigapi.Features.Account.Models;
 using Sigapi.Scraping.Document;
+using ISession = Sigapi.Scraping.Networking.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Scraping;
 
@@ -24,16 +25,17 @@ internal sealed class MultipleEnrollmentHandler : ILoginResponseHandler
         return isEnrollmentSelector || isMultipleEnrollment;
     }
 
-    public async Task<User> HandleAsync(IDocument page,
+    public async Task<User> HandleAsync(ISession session,
+        IDocument page,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
     {
-        var enrollments = await enrollmentProvider.ListEnrollmentsAsync(page.Session!, cancellationToken);
+        var enrollments = await enrollmentProvider.ListEnrollmentsAsync(session, cancellationToken);
         var enrollmentsArray = enrollments as Enrollment[] ?? enrollments.ToArray();
 
         var enrollmentToSelect = FindEnrollmentToSelect(enrollmentsArray, enrollment);
         var user = await enrollmentSelector.SelectAsync(
-            page.Session!,
+            session,
             enrollmentToSelect,
             enrollmentsArray,
             cancellationToken);

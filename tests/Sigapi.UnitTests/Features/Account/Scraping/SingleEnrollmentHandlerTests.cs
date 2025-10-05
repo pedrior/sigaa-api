@@ -26,8 +26,7 @@ public sealed class SingleEnrollmentHandlerTests
     {
         // Arrange
         var page = A.Fake<IDocument>();
-
-        A.CallTo(() => page.Session).Returns(session);
+        
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com/discente.jsf"));
         A.CallTo(() => page.Query(EnrollmentSelector.EnrollmentSelectorLinkSelector)).Returns(null);
 
@@ -43,8 +42,7 @@ public sealed class SingleEnrollmentHandlerTests
     {
         // Arrange
         var page = A.Fake<IDocument>();
-
-        A.CallTo(() => page.Session).Returns(session);
+        
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com"));
 
         var enrollment = new Enrollment
@@ -59,7 +57,7 @@ public sealed class SingleEnrollmentHandlerTests
             .Returns([enrollment]);
 
         // Act
-        var user = await sut.HandleAsync(page, "123");
+        var user = await sut.HandleAsync(session, page, "123");
 
         // Assert
         user.Enrollment.Should().Be(enrollment);
@@ -72,7 +70,6 @@ public sealed class SingleEnrollmentHandlerTests
         // Arrange
         var page = A.Fake<IDocument>();
 
-        A.CallTo(() => page.Session).Returns(session);
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com"));
 
         var enrollment = new Enrollment
@@ -87,7 +84,7 @@ public sealed class SingleEnrollmentHandlerTests
             .Returns([enrollment]);
 
         // Act
-        var act = () => sut.HandleAsync(page, "456");
+        var act = () => sut.HandleAsync(session, page, "456");
 
         // Assert
         await act.Should().ThrowAsync<InvalidEnrollmentException>();

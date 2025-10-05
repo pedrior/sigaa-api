@@ -40,7 +40,6 @@ public sealed class EnrollmentSelectorTests
 
         var successPage = A.Fake<IDocument>();
 
-        A.CallTo(() => successPage.Session).Returns(session);
         A.CallTo(() => successPage.Url).Returns(new Uri("https://example.com/discente.jsf"));
 
         A.CallTo(() => pageFetcher.FetchAndParseWithFormSubmissionAsync(
@@ -69,8 +68,7 @@ public sealed class EnrollmentSelectorTests
         };
 
         var failurePage = A.Fake<IDocument>();
-
-        A.CallTo(() => failurePage.Session).Returns(session);
+        
         A.CallTo(() => failurePage.Url).Returns(new Uri("https://example.com/vinculos.jsf"));
 
         A.CallTo(() => pageFetcher.FetchAndParseWithFormSubmissionAsync(

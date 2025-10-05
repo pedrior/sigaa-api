@@ -1,22 +1,17 @@
-﻿using ISession = Sigapi.Scraping.Networking.Sessions.ISession;
-
-namespace Sigapi.Scraping.Document;
+﻿namespace Sigapi.Scraping.Document;
 
 internal sealed class Document : IDocument
 {
     private readonly IElement root;
     
-    public Document(IElement root, Uri url, ISession? session)
+    public Document(IElement root, Uri url)
     {
          this.root = root;
          
          Url = url;
-         Session = session;
     }
     
     public Uri Url { get; }
-    
-    public ISession? Session { get; }
 
     public string? GetText() => root.GetText();
 

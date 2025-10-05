@@ -29,8 +29,7 @@ public sealed class MultipleEnrollmentHandlerTests
     {
         // Arrange
         var page = A.Fake<IDocument>();
-
-        A.CallTo(() => page.Session).Returns(session);
+        
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com/vinculos.jsf"));
 
         // Act
@@ -46,7 +45,6 @@ public sealed class MultipleEnrollmentHandlerTests
         // Arrange
         var page = A.Fake<IDocument>();
 
-        A.CallTo(() => page.Session).Returns(session);
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com"));
 
         var enrollment1 = new Enrollment
@@ -75,7 +73,7 @@ public sealed class MultipleEnrollmentHandlerTests
             .Returns(enrollments);
 
         // Act
-        await sut.HandleAsync(page, "456");
+        await sut.HandleAsync(session, page, "456");
 
         // Assert
         A.CallTo(() => enrollmentSelector.SelectAsync(session, enrollment2, enrollments, CancellationToken.None))
@@ -88,7 +86,6 @@ public sealed class MultipleEnrollmentHandlerTests
         // Arrange
         var page = A.Fake<IDocument>();
 
-        A.CallTo(() => page.Session).Returns(session);
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com"));
 
         var enrollment1 = new Enrollment
@@ -116,7 +113,7 @@ public sealed class MultipleEnrollmentHandlerTests
             .Returns(enrollments);
 
         // Act
-        await sut.HandleAsync(page);
+        await sut.HandleAsync(session, page);
 
         // Assert
         A.CallTo(() => enrollmentSelector.SelectAsync(session, enrollment2, enrollments, CancellationToken.None))
@@ -129,7 +126,6 @@ public sealed class MultipleEnrollmentHandlerTests
         // Arrange
         var page = A.Fake<IDocument>();
 
-        A.CallTo(() => page.Session).Returns(session);
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com"));
 
         var enrollments = new[]
@@ -147,7 +143,7 @@ public sealed class MultipleEnrollmentHandlerTests
             .Returns(enrollments);
 
         // Act
-        var act = () => sut.HandleAsync(page, "999");
+        var act = () => sut.HandleAsync(session, page, "999");
 
         // Assert
         await act.Should().ThrowAsync<InvalidEnrollmentException>();

@@ -10,6 +10,7 @@ using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
 using Sigapi.Scraping.Networking;
 using Sigapi.Scraping.Networking.Sessions;
+using ISession = Sigapi.Scraping.Networking.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Endpoints;
 
@@ -68,6 +69,7 @@ internal sealed class LoginEndpoint : IEndpoint
             cancellationToken);
 
         var user = await HandleLoginResponseAsync(
+            session,
             loginResponsePage,
             responseHandlers,
             request.Enrollment,
@@ -85,7 +87,8 @@ internal sealed class LoginEndpoint : IEndpoint
         return Results.Ok(response);
     }
 
-    private static Task<User> HandleLoginResponseAsync(IDocument page,
+    private static Task<User> HandleLoginResponseAsync(ISession session,
+        IDocument page,
         IEnumerable<ILoginResponseHandler> handlers,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
@@ -93,7 +96,7 @@ internal sealed class LoginEndpoint : IEndpoint
         var handler = handlers.FirstOrDefault(strategy => strategy.Evaluate(page));
         return handler is null
             ? throw new LoginException($"No login response handler found for page {page.Url}.")
-            : handler.HandleAsync(page, enrollment, cancellationToken);
+            : handler.HandleAsync(session, page, enrollment, cancellationToken);
     }
 
     private static LoginResponse CreateAccessToken(string sessionId,

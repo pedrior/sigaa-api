@@ -21,7 +21,7 @@ internal sealed class PageFetcher : IPageFetcher
         var response = await httpFetcher.FetchAsync(url, session, cancellationToken);
 
         var root = await htmlParser.ParseAsync(response.url, response.html, cancellationToken);
-        return new Document.Document(root, response.url, session);
+        return new Document.Document(root, response.url);
     }
 
     public async Task<IDocument> FetchAndParseWithFormSubmissionAsync(string url,
@@ -32,6 +32,6 @@ internal sealed class PageFetcher : IPageFetcher
         var response = await httpFetcher.FetchWithFormSubmissionAsync(url, data, session, cancellationToken);
 
         var root = await htmlParser.ParseAsync(response.url, response.html, cancellationToken);
-        return new Document.Document(root, response.url, session);
+        return new Document.Document(root, response.url);
     }
 }

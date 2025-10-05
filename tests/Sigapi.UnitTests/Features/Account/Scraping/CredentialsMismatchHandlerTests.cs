@@ -1,6 +1,7 @@
 ﻿using Sigapi.Features.Account.Exceptions;
 using Sigapi.Features.Account.Scraping;
 using Sigapi.Scraping.Document;
+using Sigapi.Scraping.Networking.Sessions;
 
 namespace Sigapi.UnitTests.Features.Account.Scraping;
 
@@ -44,7 +45,11 @@ public sealed class CredentialsMismatchHandlerTests
     {
         // Arrange
         // Act
-        var act = () => sut.HandleAsync(A.Dummy<IDocument>(), enrollment: null, CancellationToken.None);
+        var act = () => sut.HandleAsync(
+            A.Dummy<ISession>(),
+            A.Dummy<IDocument>(),
+            enrollment: null,
+            CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<InvalidCredentialsException>();
