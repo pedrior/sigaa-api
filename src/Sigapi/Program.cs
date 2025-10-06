@@ -1,25 +1,42 @@
 using Serilog;
 using Sigapi;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-builder.AddLogging();
+try
+{
+    Log.Information("Starting up");
+    
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApiServices(builder.Configuration);
+    builder.AddLogging();
 
-var app = builder.Build();
+    builder.Services.AddApiServices(builder.Configuration);
 
-app.UseForwardedHeaders();
-app.UseSerilogRequestLogging();
-app.UseExceptionHandler();
-app.UseHttpsRedirection();
-app.UseStatusCodePages();
-app.UseRateLimiter();
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseOutputCache();
-app.UseScalarUI();
+    var app = builder.Build();
 
-app.MapEndpoints();
+    app.UseForwardedHeaders();
+    app.UseSerilogRequestLogging();
+    app.UseExceptionHandler();
+    app.UseHttpsRedirection();
+    app.UseStatusCodePages();
+    app.UseRateLimiter();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.UseOutputCache();
+    app.UseScalarUI();
 
-app.Run();
+    app.MapEndpoints();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
