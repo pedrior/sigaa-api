@@ -17,7 +17,7 @@ internal sealed class SecurityTokenProvider : ISecurityTokenProvider
         this.options = options.Value;
     }
 
-    public (string token, DateTimeOffset expiresAt) CreateToken(IDictionary<string, object> claims)
+    public SecurityToken CreateToken(IDictionary<string, object> claims)
     {
         var now = time.GetUtcNow();
         var expiresAt = now.AddMinutes(TokenExpirationMinutes);
@@ -46,6 +46,6 @@ internal sealed class SecurityTokenProvider : ISecurityTokenProvider
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return (token, expiresAt);
+        return new SecurityToken(token, expiresAt);
     }
 }

@@ -2,5 +2,5 @@
 
 internal interface ISecurityTokenProvider
 {
-    (string token, DateTimeOffset expiresAt) CreateToken(IDictionary<string, object> claims);
+    SecurityToken CreateToken(IDictionary<string, object> claims);
 }
