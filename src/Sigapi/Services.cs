@@ -171,7 +171,7 @@ public static class Services
             options.AddPolicy(
                 name: CachePolicies.Account.GetProfile,
                 builder => builder.Expire(TimeSpan.FromMinutes(10))
-                    .VaryByValue(CacheVarying.VaryBySession),
+                    .VaryByUserClaim(JwtRegisteredClaimNames.Sid),
                 excludeDefaultPolicy: true);
 
             // Cache policies for centers-related endpoints.
