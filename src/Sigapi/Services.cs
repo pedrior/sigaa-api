@@ -272,7 +272,7 @@ public static class Services
         services.AddSingleton<IPropertyScraper, CollectionPropertyScraper>();
         services.AddSingleton<IPropertyScraper, DictionaryPropertyScraper>();
 
-        // Configure HttpClient with default resilience policies and proxy support.
+        // Configure HttpClient with customized cookie and redirect handling, and resilience policies.
         services.AddHttpClient(HttpClientFetcher.ClientName)
             .ConfigureHttpClient(client =>
             {
@@ -281,8 +281,8 @@ public static class Services
             })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
-                UseCookies = false, // Handled manually.
-                AllowAutoRedirect = false, // Handled manually.
+                UseCookies = false, // Handled by SessionHandler.
+                AllowAutoRedirect = false, // Handled by RedirectHandler.
                 AutomaticDecompression = DecompressionMethods.All
             })
             .AddHttpMessageHandler<RedirectHandler>()
