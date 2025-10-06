@@ -9,13 +9,13 @@ internal static class CachePolicies
 
     internal static class Centers
     {
-        public const string GetCenter = "centers:get-center";
+        public const string GetCenter = "centers:get";
         
-        public const string ListCenters = "centers:list-centers";
+        public const string ListCenters = "centers:list";
     }
 
     internal static class Departments
     {
-        public const string ListDepartments = "departments:list-departments";
+        public const string ListDepartments = "departments:list";
     }
 }
