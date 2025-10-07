@@ -20,7 +20,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
             .WithSummary("Obter centro acadêmico por ID ou Slug")
             .WithDescription("Obtém informações detalhadas sobre um centro acadêmico específico a partir de seu ID " +
                              "ou slug (ex: 'centro-de-informatica').")
-            .Produces<CenterResponse>();
+            .Produces<CenterDetailsResponse>();
     }
 
     private static async Task<IResult> HandleAsync(string idOrSlug,
@@ -46,7 +46,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
         return Results.Ok(response);
     }
 
-    private static async Task<CenterResponse> GetCenterAsync(string centerId,
+    private static async Task<CenterDetailsResponse> GetCenterAsync(string centerId,
         string centerSlug,
         IPageFetcher pageFetcher,
         IScrapingEngine scrapingEngine,
@@ -83,7 +83,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
         var postgraduateProgramsPage = postgraduateProgramsPageTask.Result;
         var researchesPage = researchesPageTask.Result;
 
-        var center = scrapingEngine.Scrape<Center>(centerPage);
+        var center = scrapingEngine.Scrape<CenterDetails>(centerPage);
 
         var departmentsTask = scrapingEngine.ScrapeAllAsync<Department>(departmentsPage, cancellationToken);
 
@@ -142,7 +142,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
                 }
             });
 
-        return new CenterResponse
+        return new CenterDetailsResponse
         {
             Id = centerId,
             Slug = centerSlug,

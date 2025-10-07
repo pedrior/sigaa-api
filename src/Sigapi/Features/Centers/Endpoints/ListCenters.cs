@@ -17,7 +17,7 @@ internal sealed class ListCentersEndpoint : IEndpoint
             .CacheOutput(CachePolicies.Centers.ListCenters)
             .WithSummary("Listar todos os centros acadêmico")
             .WithDescription("Retorna uma lista com todas os centros acadêmico disponíveis.")
-            .Produces<IEnumerable<CenterSummaryResponse>>();
+            .Produces<IEnumerable<CenterResponse>>();
     }
 
     private static async Task<IResult> HandleAsync(HttpContext context,
@@ -30,7 +30,7 @@ internal sealed class ListCentersEndpoint : IEndpoint
         return Results.Ok(response);
     }
 
-    private static async Task<IEnumerable<CenterSummaryResponse>> ListCentersAsync(IPageFetcher pageFetcher,
+    private static async Task<IEnumerable<CenterResponse>> ListCentersAsync(IPageFetcher pageFetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
@@ -38,10 +38,10 @@ internal sealed class ListCentersEndpoint : IEndpoint
             CenterPages.CenterList,
             cancellationToken: cancellationToken);
 
-        var centers = await scrapingEngine.ScrapeAllAsync<CenterSummary>(page, cancellationToken);
+        var centers = await scrapingEngine.ScrapeAllAsync<Center>(page, cancellationToken);
         return centers
             .OrderBy(f => f.Name)
-            .Select(f => new CenterSummaryResponse
+            .Select(f => new CenterResponse
             {
                 Id = f.Id,
                 Slug = f.Slug,
