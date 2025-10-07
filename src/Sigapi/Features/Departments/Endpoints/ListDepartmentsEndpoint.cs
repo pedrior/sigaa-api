@@ -16,8 +16,8 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
     {
         builder.MapGet("/", HandleAsync)
             .CacheOutput(CachePolicies.Departments.ListDepartments)
-            .WithSummary("Listar todas as unidades acadêmicas")
-            .WithDescription("Retorna uma lista com todas as unidades acadêmicas agrupadas por seus respectivos " +
+            .WithSummary("Listar todos os departamentos")
+            .WithDescription("Obtém uma lista de todos os departamentos agrupados por seus respectivos " +
                              "centros acadêmicos.")
             .Produces<IEnumerable<DepartmentGroupResponse>>();
     }
