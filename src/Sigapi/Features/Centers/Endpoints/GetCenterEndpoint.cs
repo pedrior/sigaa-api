@@ -4,7 +4,6 @@ using Sigapi.Common.Problems;
 using Sigapi.Features.Centers.Contracts;
 using Sigapi.Features.Centers.Models;
 using Sigapi.Features.Centers.Scraping;
-using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
 using Sigapi.Scraping.Networking;
 
@@ -29,16 +28,15 @@ internal sealed class GetCenterEndpoint : IEndpoint
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        if (CenterLookup.FindByIdOrSlug(idOrSlug) is not var (centerId, centerSlug))
+        if (await FindCenterAsync(idOrSlug, pageFetcher, scrapingEngine, cancellationToken) is not { } center)
         {
             return idOrSlug.All(char.IsDigit)
                 ? new NotFoundProblem($"Center with ID '{idOrSlug}' was not found.")
                 : new NotFoundProblem($"Center with slug '{idOrSlug}' was not found.");
         }
 
-        var response = await GetCenterAsync(
-            centerId,
-            centerSlug,
+        var response = await GetCenterDetailsAsync(
+            center,
             pageFetcher,
             scrapingEngine,
             cancellationToken);
@@ -46,29 +44,43 @@ internal sealed class GetCenterEndpoint : IEndpoint
         return Results.Ok(response);
     }
 
-    private static async Task<CenterDetailsResponse> GetCenterAsync(string centerId,
-        string centerSlug,
+    private static async Task<Center?> FindCenterAsync(string idOrSlug,
         IPageFetcher pageFetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var centerPageTask = FetchPageAsync(pageFetcher, CenterPages.GetCenter(centerId), cancellationToken);
-        var departmentsPageTask = FetchPageAsync(
-            pageFetcher,
-            CenterPages.GetDepartments(centerId),
-            cancellationToken);
+        var centerListPage = await pageFetcher.FetchAndParseAsync(
+            CenterPages.CenterList,
+            cancellationToken: cancellationToken);
 
-        var undergraduateProgramsPageTask = FetchPageAsync(
-            pageFetcher,
-            CenterPages.GetUndergraduatePrograms(centerId),
-            cancellationToken);
+        var centers = await scrapingEngine.ScrapeAllAsync<Center>(centerListPage, cancellationToken);
+        return centers.FirstOrDefault(c => c.Id == idOrSlug || c.Slug == idOrSlug);
+    }
 
-        var postgraduateProgramsPageTask = FetchPageAsync(
-            pageFetcher,
-            CenterPages.GetPostgraduatePrograms(centerId),
-            cancellationToken);
+    private static async Task<CenterDetailsResponse> GetCenterDetailsAsync(Center center,
+        IPageFetcher pageFetcher,
+        IScrapingEngine scrapingEngine,
+        CancellationToken cancellationToken)
+    {
+        var centerPageTask = pageFetcher.FetchAndParseAsync(
+            CenterPages.GetCenter(center.Id),
+            cancellationToken: cancellationToken);
 
-        var researchesPageTask = FetchPageAsync(pageFetcher, CenterPages.GetResearches(centerId), cancellationToken);
+        var departmentsPageTask = pageFetcher.FetchAndParseAsync(
+            CenterPages.GetDepartments(center.Id),
+            cancellationToken: cancellationToken);
+
+        var undergraduateProgramsPageTask = pageFetcher.FetchAndParseAsync(
+            CenterPages.GetUndergraduatePrograms(center.Id),
+            cancellationToken: cancellationToken);
+
+        var postgraduateProgramsPageTask = pageFetcher.FetchAndParseAsync(
+            CenterPages.GetPostgraduatePrograms(center.Id),
+            cancellationToken: cancellationToken);
+
+        var researchesPageTask = pageFetcher.FetchAndParseAsync(
+            CenterPages.GetResearches(center.Id),
+            cancellationToken: cancellationToken);
 
         await Task.WhenAll(
             centerPageTask,
@@ -83,7 +95,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
         var postgraduateProgramsPage = postgraduateProgramsPageTask.Result;
         var researchesPage = researchesPageTask.Result;
 
-        var center = scrapingEngine.Scrape<CenterDetails>(centerPage);
+        var details = scrapingEngine.Scrape<CenterDetails>(centerPage);
 
         var departmentsTask = scrapingEngine.ScrapeAllAsync<Department>(departmentsPage, cancellationToken);
 
@@ -144,24 +156,17 @@ internal sealed class GetCenterEndpoint : IEndpoint
 
         return new CenterDetailsResponse
         {
-            Id = centerId,
-            Slug = centerSlug,
+            Id = center.Id,
+            Slug = center.Slug,
             Name = center.Name,
             Acronym = center.Acronym,
-            Address = center.Address,
-            Director = center.Director,
-            Description = center.Description,
-            LogoUrl = center.LogoUrl,
+            Address = details.Address,
+            Director = details.Director,
+            Description = details.Description,
+            LogoUrl = details.LogoUrl,
             Departments = departmentsResponse,
             Programs = programsResponse,
             Researches = researchResponses
         };
-    }
-
-    private static async Task<IElement> FetchPageAsync(IPageFetcher pageFetcher,
-        string url,
-        CancellationToken cancellationToken)
-    {
-        return await pageFetcher.FetchAndParseAsync(url, cancellationToken: cancellationToken);
     }
 }
