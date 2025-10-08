@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace Sigapi.Scraping.Networking.Sessions;
+﻿namespace Sigapi.Scraping.Networking.Sessions;
 
 internal interface ISession
 {
@@ -17,6 +15,4 @@ internal interface ISession
     internal void SetCookies(Uri target, IEnumerable<string> cookies);
     
     internal string GetCookies(Uri target);
-    
-    internal IEnumerable<Cookie> ListCookies();
 }
