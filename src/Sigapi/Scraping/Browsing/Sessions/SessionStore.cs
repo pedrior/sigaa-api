@@ -3,7 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Sigapi.Scraping.Networking.Sessions;
+namespace Sigapi.Scraping.Browsing.Sessions;
 
 internal sealed class SessionStore : ISessionStore
 {

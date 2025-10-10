@@ -6,11 +6,11 @@ using Sigapi.Features.Account.Contracts;
 using Sigapi.Features.Account.Exceptions;
 using Sigapi.Features.Account.Models;
 using Sigapi.Features.Account.Scraping;
+using Sigapi.Scraping.Browsing;
+using Sigapi.Scraping.Browsing.Sessions;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
-using Sigapi.Scraping.Networking;
-using Sigapi.Scraping.Networking.Sessions;
-using ISession = Sigapi.Scraping.Networking.Sessions.ISession;
+using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Endpoints;
 
@@ -50,7 +50,7 @@ internal sealed class LoginEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(LoginRequest request,
         HttpContext context,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         IEnumerable<ILoginResponseHandler> responseHandlers,
         ISecurityTokenProvider securityTokenProvider,
@@ -59,14 +59,13 @@ internal sealed class LoginEndpoint : IEndpoint
     {
         var session = sessionManager.CreateSession();
 
-        var loginPage = await pageFetcher.FetchAndParseAsync(AccountPages.Login, session, cancellationToken);
+        var loginPage = await resourceLoader.LoadDocumentAsync(AccountPages.Login)
+            .WithSession(session, cancellationToken);
+        
         var loginForm = scrapingEngine.Scrape<LoginForm>(loginPage);
-
-        var loginResponsePage = await pageFetcher.FetchAndParseWithFormSubmissionAsync(
-            loginForm.Action,
-            loginForm.BuildSubmissionData(request.Username, request.Password),
-            session,
-            cancellationToken);
+        var loginResponsePage = await resourceLoader.LoadDocumentAsync(loginForm.Action)
+                .WithFormData(loginForm.BuildSubmissionData(request.Username, request.Password))
+                .WithSession(session, cancellationToken);
 
         var user = await HandleLoginResponseAsync(
             session,

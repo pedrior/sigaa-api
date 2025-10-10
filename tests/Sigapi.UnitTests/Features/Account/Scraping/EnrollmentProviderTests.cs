@@ -1,26 +1,26 @@
 ﻿using Sigapi.Features.Account.Models;
 using Sigapi.Features.Account.Scraping;
+using Sigapi.Scraping.Browsing;
+using Sigapi.Scraping.Browsing.Sessions;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
-using Sigapi.Scraping.Networking;
-using Sigapi.Scraping.Networking.Sessions;
 
 namespace Sigapi.UnitTests.Features.Account.Scraping;
 
 [TestSubject(typeof(EnrollmentProvider))]
 public class EnrollmentProviderTests
 {
-    private readonly IPageFetcher pageFetcher;
+    private readonly IResourceLoader resourceLoader;
     private readonly IScrapingEngine scrapingEngine;
     private readonly EnrollmentProvider enrollmentProvider;
     private readonly ISession session;
 
     public EnrollmentProviderTests()
     {
-        pageFetcher = A.Fake<IPageFetcher>();
+        resourceLoader = A.Fake<IResourceLoader>();
         scrapingEngine = A.Fake<IScrapingEngine>();
         session = A.Fake<ISession>();
-        enrollmentProvider = new EnrollmentProvider(pageFetcher, scrapingEngine);
+        enrollmentProvider = new EnrollmentProvider(resourceLoader, scrapingEngine);
     }
 
     [Fact]
@@ -28,14 +28,17 @@ public class EnrollmentProviderTests
     {
         // Arrange
         var page = A.Fake<IDocument>();
-        
+        var browserRequest = A.Fake<IDocumentRequest>();
+    
         A.CallTo(() => page.Url).Returns(new Uri("https://example.com/vinculos.jsf"));
+        A.CallTo(() => resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector))
+            .Returns(browserRequest);
 
-        A.CallTo(() => pageFetcher.FetchAndParseAsync(
-                AccountPages.EnrollmentSelector,
-                session,
-                A<CancellationToken>._))
-            .Returns(page);
+        A.CallTo(() => browserRequest.WithSession(session, A<CancellationToken>.Ignored))
+            .Returns(browserRequest);
+    
+        A.CallTo(() => browserRequest.GetAwaiter())
+            .Returns(Task.FromResult(page).GetAwaiter());
 
         var enrollments = new UserEnrollments
         {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Sigapi.Features.Account.Exceptions;
-using Sigapi.Scraping.Networking.Sessions;
+using Sigapi.Scraping.Browsing.Sessions;
 
 namespace Sigapi.Common.Exceptions;
 

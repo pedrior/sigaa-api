@@ -1,4 +1,4 @@
-﻿using Sigapi.Scraping.Networking.Sessions;
+﻿using Sigapi.Scraping.Browsing.Sessions;
 
 namespace Sigapi.UnitTests.Scraping.Networking.Sessions;
 

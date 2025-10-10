@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json.Serialization;
 
-namespace Sigapi.Scraping.Networking.Sessions;
+namespace Sigapi.Scraping.Browsing.Sessions;
 
 [JsonConverter(typeof(SessionSerializer))]
 internal sealed class Session : ISession

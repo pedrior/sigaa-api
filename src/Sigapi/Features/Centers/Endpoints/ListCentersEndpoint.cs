@@ -3,8 +3,8 @@ using Sigapi.Common.Endpoints;
 using Sigapi.Features.Centers.Contracts;
 using Sigapi.Features.Centers.Models;
 using Sigapi.Features.Centers.Scraping;
+using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Engine;
-using Sigapi.Scraping.Networking;
 
 namespace Sigapi.Features.Centers.Endpoints;
 
@@ -21,22 +21,21 @@ internal sealed class ListCentersEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(HttpContext context,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var response = await ListCentersAsync(pageFetcher, scrapingEngine, cancellationToken);
+        var response = await ListCentersAsync(resourceLoader, scrapingEngine, cancellationToken);
 
         return Results.Ok(response);
     }
 
-    private static async Task<IEnumerable<CenterResponse>> ListCentersAsync(IPageFetcher pageFetcher,
+    private static async Task<IEnumerable<CenterResponse>> ListCentersAsync(IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var page = await pageFetcher.FetchAndParseAsync(
-            CenterPages.CenterList,
-            cancellationToken: cancellationToken);
+        var page = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
+            .WithAnonymousSession(cancellationToken);
 
         var centers = await scrapingEngine.ScrapeAllAsync<Center>(page, cancellationToken);
         return centers

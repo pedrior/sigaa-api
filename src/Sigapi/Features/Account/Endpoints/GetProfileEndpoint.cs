@@ -5,9 +5,8 @@ using Sigapi.Common.Security;
 using Sigapi.Features.Account.Contracts;
 using Sigapi.Features.Account.Models;
 using Sigapi.Features.Account.Scraping;
+using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Engine;
-using Sigapi.Scraping.Networking;
-using Sigapi.Scraping.Networking.Sessions;
 
 namespace Sigapi.Features.Account.Endpoints;
 
@@ -25,30 +24,23 @@ internal sealed class GetProfileEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(HttpContext context,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         IUserContext userContext,
-        ISessionManager sessionManager,
         CancellationToken cancellationToken)
     {
-        var response = await GetProfileAsync(
-            pageFetcher,
-            scrapingEngine,
-            userContext,
-            sessionManager,
-            cancellationToken);
+        var response = await GetProfileAsync(resourceLoader, scrapingEngine, userContext, cancellationToken);
 
         return Results.Ok(response);
     }
 
-    private static async Task<ProfileResponse> GetProfileAsync(IPageFetcher pageFetcher,
+    private static async Task<ProfileResponse> GetProfileAsync(IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         IUserContext userContext,
-        ISessionManager sessionManager,
         CancellationToken cancellationToken = default)
     {
-        var session = await sessionManager.LoadSessionAsync(userContext.SessionId, cancellationToken);
-        var page = await pageFetcher.FetchAndParseAsync(AccountPages.Profile, session, cancellationToken);
+        var page = await resourceLoader.LoadDocumentAsync(AccountPages.Profile)
+            .WithUserSession(cancellationToken);
 
         var profile = scrapingEngine.Scrape<Profile>(page);
 

@@ -1,7 +1,7 @@
 ﻿using Sigapi.Features.Account.Models;
+using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Exceptions;
-using Sigapi.Scraping.Networking;
-using ISession = Sigapi.Scraping.Networking.Sessions.ISession;
+using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Scraping;
 
@@ -9,11 +9,11 @@ internal sealed class EnrollmentSelector : IEnrollmentSelector
 {
     public const string EnrollmentSelectorLinkSelector = "a[href*='vinculos/listar']";
     
-    private readonly IPageFetcher pageFetcher;
+    private readonly IResourceLoader resourceLoader;
 
-    public EnrollmentSelector(IPageFetcher pageFetcher)
+    public EnrollmentSelector(IResourceLoader resourceLoader)
     {
-        this.pageFetcher = pageFetcher;
+        this.resourceLoader = resourceLoader;
     }
 
     public async Task<User> SelectAsync(ISession session,
@@ -21,11 +21,9 @@ internal sealed class EnrollmentSelector : IEnrollmentSelector
         IEnumerable<Enrollment> enrollments,
         CancellationToken cancellationToken = default)
     {
-        var response = await pageFetcher.FetchAndParseWithFormSubmissionAsync(
-            AccountPages.EnrollmentSelector,
-            enrollment.Data,
-            session,
-            cancellationToken);
+        var response = await resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector)
+            .WithFormData(enrollment.Data)
+            .WithSession(session, cancellationToken);
 
         return response.Url.AbsoluteUri.Contains("discente.jsf")
             ? new User(enrollment, enrollments)

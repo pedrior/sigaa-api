@@ -1,7 +1,7 @@
 ﻿using Sigapi.Features.Account.Exceptions;
 using Sigapi.Features.Account.Scraping;
+using Sigapi.Scraping.Browsing.Sessions;
 using Sigapi.Scraping.Document;
-using Sigapi.Scraping.Networking.Sessions;
 
 namespace Sigapi.UnitTests.Features.Account.Scraping;
 

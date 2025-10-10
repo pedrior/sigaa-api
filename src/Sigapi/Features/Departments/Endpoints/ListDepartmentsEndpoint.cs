@@ -3,9 +3,8 @@ using Sigapi.Common.Endpoints;
 using Sigapi.Features.Departments.Contracts;
 using Sigapi.Features.Departments.Models;
 using Sigapi.Features.Departments.Scraping;
+using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Engine;
-using Sigapi.Scraping.Networking;
-using Sigapi.Scraping.Networking.Sessions;
 
 namespace Sigapi.Features.Departments.Endpoints;
 
@@ -23,18 +22,14 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(HttpContext context,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
-        ISessionManager sessionManager,
         CancellationToken cancellationToken)
     {
-        var session = sessionManager.CreateSession();
-        var form = await GetDepartmentListingFormAsync(pageFetcher, scrapingEngine, session, cancellationToken);
-        var page = await pageFetcher.FetchAndParseWithFormSubmissionAsync(
-            form.Action,
-            form.BuildSubmissionData(),
-            session,
-            cancellationToken);
+        var form = await GetDepartmentListingFormAsync(resourceLoader, scrapingEngine, cancellationToken);
+        var page = await resourceLoader.LoadDocumentAsync(form.Action)
+            .WithFormData(form.BuildSubmissionData())
+            .WithContextualSession(cancellationToken);
 
         var departments = await scrapingEngine.ScrapeAllAsync<Department>(page, cancellationToken);
         var centers = await scrapingEngine.ScrapeAllAsync<DepartmentCenter>(page, cancellationToken);
@@ -58,15 +53,12 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
         return Results.Ok(response);
     }
 
-    private static async Task<DepartmentListingForm> GetDepartmentListingFormAsync(IPageFetcher pageFetcher,
+    private static async Task<DepartmentListingForm> GetDepartmentListingFormAsync(IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
-        Sigapi.Scraping.Networking.Sessions.ISession session,
         CancellationToken cancellationToken)
     {
-        var page = await pageFetcher.FetchAndParseAsync(
-            DepartmentPages.Listing,
-            session,
-            cancellationToken);
+        var page = await resourceLoader.LoadDocumentAsync(DepartmentPages.Listing)
+            .WithContextualSession(cancellationToken);
 
         return scrapingEngine.Scrape<DepartmentListingForm>(page);
     }

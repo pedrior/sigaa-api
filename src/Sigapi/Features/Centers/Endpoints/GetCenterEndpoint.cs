@@ -4,8 +4,8 @@ using Sigapi.Common.Problems;
 using Sigapi.Features.Centers.Contracts;
 using Sigapi.Features.Centers.Models;
 using Sigapi.Features.Centers.Scraping;
+using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Engine;
-using Sigapi.Scraping.Networking;
 
 namespace Sigapi.Features.Centers.Endpoints;
 
@@ -24,11 +24,11 @@ internal sealed class GetCenterEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(string idOrSlug,
         HttpContext context,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        if (await FindCenterAsync(idOrSlug, pageFetcher, scrapingEngine, cancellationToken) is not { } center)
+        if (await FindCenterAsync(idOrSlug, resourceLoader, scrapingEngine, cancellationToken) is not { } center)
         {
             return idOrSlug.All(char.IsDigit)
                 ? new NotFoundProblem($"Center with ID '{idOrSlug}' was not found.")
@@ -37,7 +37,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
 
         var response = await GetCenterDetailsAsync(
             center,
-            pageFetcher,
+            resourceLoader,
             scrapingEngine,
             cancellationToken);
 
@@ -45,42 +45,41 @@ internal sealed class GetCenterEndpoint : IEndpoint
     }
 
     private static async Task<Center?> FindCenterAsync(string idOrSlug,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var centerListPage = await pageFetcher.FetchAndParseAsync(
-            CenterPages.CenterList,
-            cancellationToken: cancellationToken);
+        var centerListPage = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
+            .WithAnonymousSession(cancellationToken);
 
         var centers = await scrapingEngine.ScrapeAllAsync<Center>(centerListPage, cancellationToken);
         return centers.FirstOrDefault(c => c.Id == idOrSlug || c.Slug == idOrSlug);
     }
 
     private static async Task<CenterDetailsResponse> GetCenterDetailsAsync(Center center,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var centerPageTask = pageFetcher.FetchAndParseAsync(
-            CenterPages.GetCenter(center.Id),
-            cancellationToken: cancellationToken);
-
-        var departmentsPageTask = pageFetcher.FetchAndParseAsync(
-            CenterPages.GetDepartments(center.Id),
-            cancellationToken: cancellationToken);
-
-        var undergraduateProgramsPageTask = pageFetcher.FetchAndParseAsync(
-            CenterPages.GetUndergraduatePrograms(center.Id),
-            cancellationToken: cancellationToken);
-
-        var postgraduateProgramsPageTask = pageFetcher.FetchAndParseAsync(
-            CenterPages.GetPostgraduatePrograms(center.Id),
-            cancellationToken: cancellationToken);
-
-        var researchesPageTask = pageFetcher.FetchAndParseAsync(
-            CenterPages.GetResearches(center.Id),
-            cancellationToken: cancellationToken);
+        var centerPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetCenter(center.Id))
+            .WithAnonymousSession(cancellationToken)
+            .AsTask();
+        
+        var departmentsPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetDepartments(center.Id))
+            .WithAnonymousSession(cancellationToken)
+            .AsTask();
+        
+        var undergraduateProgramsPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetUndergraduatePrograms(center.Id))
+            .WithAnonymousSession(cancellationToken)
+            .AsTask();
+        
+        var postgraduateProgramsPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetPostgraduatePrograms(center.Id))
+            .WithAnonymousSession(cancellationToken)
+            .AsTask();
+        
+        var researchesPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetResearches(center.Id))
+            .WithAnonymousSession(cancellationToken)
+            .AsTask();
 
         await Task.WhenAll(
             centerPageTask,

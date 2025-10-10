@@ -1,24 +1,24 @@
 ﻿using Sigapi.Features.Account.Models;
 using Sigapi.Features.Account.Scraping;
+using Sigapi.Scraping.Browsing;
+using Sigapi.Scraping.Browsing.Sessions;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Exceptions;
-using Sigapi.Scraping.Networking;
-using Sigapi.Scraping.Networking.Sessions;
 
 namespace Sigapi.UnitTests.Features.Account.Scraping;
 
 [TestSubject(typeof(EnrollmentSelector))]
 public sealed class EnrollmentSelectorTests
 {
-    private readonly IPageFetcher pageFetcher;
+    private readonly IResourceLoader resourceLoader;
     private readonly EnrollmentSelector sut;
     private readonly ISession session;
 
     public EnrollmentSelectorTests()
     {
-        pageFetcher = A.Fake<IPageFetcher>();
+        resourceLoader = A.Fake<IResourceLoader>();
         session = A.Fake<ISession>();
-        sut = new EnrollmentSelector(pageFetcher);
+        sut = new EnrollmentSelector(resourceLoader);
     }
 
     [Fact]
@@ -39,15 +39,21 @@ public sealed class EnrollmentSelectorTests
         };
 
         var successPage = A.Fake<IDocument>();
-
+        var browserRequest = A.Fake<IDocumentRequest>();
+    
         A.CallTo(() => successPage.Url).Returns(new Uri("https://example.com/discente.jsf"));
+        
+        A.CallTo(() => resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector))
+            .Returns(browserRequest);
 
-        A.CallTo(() => pageFetcher.FetchAndParseWithFormSubmissionAsync(
-                AccountPages.EnrollmentSelector,
-                enrollmentToSelect.Data,
-                session,
-                A<CancellationToken>._))
-            .Returns(successPage);
+        A.CallTo(() => browserRequest.WithFormData(enrollmentToSelect.Data))
+            .Returns(browserRequest);
+        
+        A.CallTo(() => browserRequest.WithSession(session, A<CancellationToken>.Ignored))
+            .Returns(browserRequest);
+
+        A.CallTo(() => browserRequest.GetAwaiter())
+            .Returns(Task.FromResult(successPage).GetAwaiter());
 
         // Act
         var user = await sut.SelectAsync(session, enrollmentToSelect, enrollments);
@@ -68,15 +74,22 @@ public sealed class EnrollmentSelectorTests
         };
 
         var failurePage = A.Fake<IDocument>();
-        
+        var fakeBrowserRequest = A.Fake<IDocumentRequest>();
+
         A.CallTo(() => failurePage.Url).Returns(new Uri("https://example.com/vinculos.jsf"));
 
-        A.CallTo(() => pageFetcher.FetchAndParseWithFormSubmissionAsync(
-                A<string>._,
-                A<Dictionary<string, string>>._,
-                A<ISession>._,
-                A<CancellationToken>._))
-            .Returns(failurePage);
+        // --- Refactored Part ---
+        A.CallTo(() => resourceLoader.LoadDocumentAsync(A<string>._))
+            .Returns(fakeBrowserRequest);
+
+        A.CallTo(() => fakeBrowserRequest.WithFormData(A<Dictionary<string, string>>._))
+            .Returns(fakeBrowserRequest);
+        
+        A.CallTo(() => fakeBrowserRequest.WithSession(A<ISession>._, A<CancellationToken>._))
+            .Returns(fakeBrowserRequest);
+
+        A.CallTo(() => fakeBrowserRequest.GetAwaiter())
+            .Returns(Task.FromResult(failurePage).GetAwaiter());
 
         // Act
         var act = () => sut.SelectAsync(session, enrollmentToSelect, new List<Enrollment>());

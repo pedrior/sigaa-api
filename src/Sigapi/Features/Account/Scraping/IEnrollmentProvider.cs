@@ -1,5 +1,5 @@
 ﻿using Sigapi.Features.Account.Models;
-using ISession = Sigapi.Scraping.Networking.Sessions.ISession;
+using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Scraping;
 

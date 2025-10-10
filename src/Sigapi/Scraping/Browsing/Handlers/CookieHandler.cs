@@ -1,6 +1,9 @@
-﻿namespace Sigapi.Scraping.Networking.Sessions;
+﻿using Sigapi.Scraping.Browsing.Sessions;
+using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
-internal sealed class SessionHandler : DelegatingHandler
+namespace Sigapi.Scraping.Browsing.Handlers;
+
+internal sealed class CookieHandler : DelegatingHandler
 {
     private const string CookieHeader = "Cookie";
     private const string SetCookieHeader = "Set-Cookie";

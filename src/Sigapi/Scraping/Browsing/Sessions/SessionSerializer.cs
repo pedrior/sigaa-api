@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Sigapi.Scraping.Networking.Sessions;
+namespace Sigapi.Scraping.Browsing.Sessions;
 
 internal sealed class SessionSerializer : JsonConverter<Session>
 {

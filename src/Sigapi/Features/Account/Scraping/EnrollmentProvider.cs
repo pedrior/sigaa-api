@@ -1,28 +1,26 @@
 ﻿using Sigapi.Features.Account.Models;
+using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Engine;
-using Sigapi.Scraping.Networking;
-using ISession = Sigapi.Scraping.Networking.Sessions.ISession;
+using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Scraping;
 
 internal sealed class EnrollmentProvider : IEnrollmentProvider
 {
-    private readonly IPageFetcher pageFetcher;
+    private readonly IResourceLoader resourceLoader;
     private readonly IScrapingEngine scrapingEngine;
 
-    public EnrollmentProvider(IPageFetcher pageFetcher, IScrapingEngine scrapingEngine)
+    public EnrollmentProvider(IResourceLoader resourceLoader, IScrapingEngine scrapingEngine)
     {
-        this.pageFetcher = pageFetcher;
+        this.resourceLoader = resourceLoader;
         this.scrapingEngine = scrapingEngine;
     }
 
     public async Task<IEnumerable<Enrollment>> ListEnrollmentsAsync(ISession session,
         CancellationToken cancellationToken = default)
     {
-        var page = await pageFetcher.FetchAndParseAsync(
-            AccountPages.EnrollmentSelector,
-            session,
-            cancellationToken);
+        var page = await resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector)
+            .WithSession(session, cancellationToken);
 
         var enrollments = scrapingEngine.Scrape<UserEnrollments>(page);
         return enrollments.Active

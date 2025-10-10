@@ -1,3 +1,3 @@
-﻿namespace Sigapi.Scraping.Networking.Sessions;
+﻿namespace Sigapi.Scraping.Browsing.Sessions;
 
 internal sealed class SessionExpiredException(string message, Exception? inner = null) : Exception(message, inner);

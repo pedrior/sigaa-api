@@ -1,4 +1,4 @@
-﻿namespace Sigapi.Scraping.Networking.Redirection;
+﻿namespace Sigapi.Scraping.Browsing.Handlers;
 
 internal sealed class RedirectHandler(ILogger<RedirectHandler> logger) : DelegatingHandler
 {

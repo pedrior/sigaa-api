@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
-using Sigapi.Scraping.Networking.Redirection;
+using Sigapi.Scraping.Browsing.Handlers;
 
 namespace Sigapi.UnitTests.Scraping.Networking.Redirection;
 

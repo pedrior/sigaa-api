@@ -1,14 +1,15 @@
 ﻿using System.Net;
-using Sigapi.Scraping.Networking.Sessions;
+using Sigapi.Scraping.Browsing.Handlers;
+using Sigapi.Scraping.Browsing.Sessions;
 
 namespace Sigapi.UnitTests.Scraping.Networking.Sessions;
 
-[TestSubject(subject: typeof(SessionHandler))]
-public sealed class SessionHandlerTests
+[TestSubject(subject: typeof(CookieHandler))]
+public sealed class CookieHandlerTests
 {
     private static (HttpClient client, MockHttpMessageHandler handler) CreateTestClient()
     {
-        var sessionHandler = new SessionHandler
+        var sessionHandler = new CookieHandler
         {
             InnerHandler = new MockHttpMessageHandler()
         };
@@ -27,7 +28,7 @@ public sealed class SessionHandlerTests
         session.SetCookies(target: uri, cookies: ["key=value"]);
 
         var request = new HttpRequestMessage(method: HttpMethod.Get, requestUri: uri);
-        request.Options.Set(key: SessionHandler.SessionKey, value: session);
+        request.Options.Set(key: CookieHandler.SessionKey, value: session);
 
         // Act
         await client.SendAsync(request: request);
@@ -46,7 +47,7 @@ public sealed class SessionHandlerTests
         var uri = new Uri(uriString: "http://example.com");
 
         var request = new HttpRequestMessage(method: HttpMethod.Get, requestUri: uri);
-        request.Options.Set(key: SessionHandler.SessionKey, value: session);
+        request.Options.Set(key: CookieHandler.SessionKey, value: session);
 
         messageHandler.Response.Headers.Add(name: "Set-Cookie", value: "new_key=new_value");
 
@@ -70,7 +71,7 @@ public sealed class SessionHandlerTests
             cookies: []);
 
         var request = new HttpRequestMessage(method: HttpMethod.Get, requestUri: "http://example.com");
-        request.Options.Set(key: SessionHandler.SessionKey, value: expiredSession);
+        request.Options.Set(key: CookieHandler.SessionKey, value: expiredSession);
 
         // Act
         var act = () => client.SendAsync(request: request);
@@ -93,7 +94,7 @@ public sealed class SessionHandlerTests
 
         var request = new HttpRequestMessage(method: HttpMethod.Get, requestUri: "http://example.com");
         
-        request.Options.Set(key: SessionHandler.SessionKey, value: session);
+        request.Options.Set(key: CookieHandler.SessionKey, value: session);
 
         // Act
         Thread.Sleep(millisecondsTimeout: 10); // Ensure time progresses

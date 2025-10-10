@@ -2,8 +2,8 @@
 using Sigapi.Common.RateLimiter;
 using Sigapi.Common.Security;
 using Sigapi.Features.Account.Scraping;
-using Sigapi.Scraping.Networking;
-using Sigapi.Scraping.Networking.Sessions;
+using Sigapi.Scraping.Browsing;
+using Sigapi.Scraping.Browsing.Sessions;
 
 namespace Sigapi.Features.Account.Endpoints;
 
@@ -20,14 +20,14 @@ internal sealed class LogoutEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(HttpContext context,
-        IPageFetcher pageFetcher,
+        IResourceLoader resourceLoader,
         IUserContext userContext,
         ISessionManager sessionManager,
         CancellationToken cancellationToken)
     {
-        var session = await sessionManager.LoadSessionAsync(userContext.SessionId, cancellationToken);
+        _ = await resourceLoader.LoadDocumentAsync(AccountPages.Logout)
+            .WithUserSession(cancellationToken);
 
-        await pageFetcher.FetchAndParseAsync(AccountPages.Logout, session, cancellationToken);
         await sessionManager.RevokeSessionAsync(userContext.SessionId, cancellationToken);
 
         return Results.NoContent();

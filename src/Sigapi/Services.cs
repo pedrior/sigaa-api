@@ -18,14 +18,15 @@ using Sigapi.Common.RateLimiter;
 using Sigapi.Common.Security;
 using Sigapi.Common.Security.Tokens;
 using Sigapi.Features.Account.Scraping;
+using Sigapi.Scraping.Browsing;
+using Sigapi.Scraping.Browsing.Handlers;
+using Sigapi.Scraping.Browsing.Sessions;
+using Sigapi.Scraping.Browsing.Sessions.Strategies;
 using Sigapi.Scraping.Configuration;
 using Sigapi.Scraping.Converters;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
 using Sigapi.Scraping.Engine.Strategies;
-using Sigapi.Scraping.Networking;
-using Sigapi.Scraping.Networking.Redirection;
-using Sigapi.Scraping.Networking.Sessions;
 
 namespace Sigapi;
 
@@ -244,49 +245,55 @@ public static class Services
 
     private static void AddScraping(this IServiceCollection services)
     {
-        // Session Management Services.
+        // Session-related services.
         services.AddSingleton<ISessionManager, SessionManager>();
         services.AddSingleton<ISessionStore, SessionStore>();
-        services.AddTransient<SessionHandler>();
+        services.AddTransient<AnonymousSessionStrategy>();
+        services.AddTransient<ContextualSessionStrategy>();
+        services.AddTransient<UserSessionStrategy>();
+        services.AddTransient<ISessionStrategyProvider, SessionStrategyProvider>();
+        services.AddScoped<IScopedSessionContext, ScopedSessionContext>();
 
-        // Redirection Management Services.
+        // Http delegating handlers.
+        services.AddTransient<CookieHandler>();
         services.AddTransient<RedirectHandler>();
-
-        // Fetching and Parsing Services.
-        services.AddSingleton<IPageFetcher, PageFetcher>();
-        services.AddSingleton<IHttpFetcher, HttpClientFetcher>();
-        services.AddSingleton<IHtmlParser, HtmlParser>();
 
         // Core Scraping Services.
         services.AddSingleton<IScrapingEngine, ScrapingEngine>();
         services.AddSingleton<IConversionService, ConversionService>();
 
-        // Model scraping infrastructure.
+        services.AddSingleton<IHtmlParser, HtmlParser>();
+
         services.AddTransient(typeof(IModelScraper<>), typeof(ModelScraper<>));
         services.AddSingleton<IModelScraperFactory, ModelScraperFactory>();
         services.AddSingleton<IScrapingModelConfigurationProvider, ScrapingModelConfigurationProvider>();
 
-        // Property scraping strategies.
         services.AddSingleton<IPropertyScraper, ValuePropertyScraper>();
         services.AddSingleton<IPropertyScraper, ObjectPropertyScraper>();
         services.AddSingleton<IPropertyScraper, CollectionPropertyScraper>();
         services.AddSingleton<IPropertyScraper, DictionaryPropertyScraper>();
 
-        // Configure HttpClient with customized cookie and redirect handling, and resilience policies.
-        services.AddHttpClient(HttpClientFetcher.ClientName)
+        services.AddHttpClient<IResourceLoader, ResourceLoader>()
             .ConfigureHttpClient(client =>
             {
                 // Handled by resilience policies.
                 client.Timeout = Timeout.InfiniteTimeSpan;
+
+                client.BaseAddress = new Uri("https://sigaa.ufpb.br");
+
+                client.DefaultRequestHeaders.Add("Accept", "*/*");
+                client.DefaultRequestHeaders.Add("Accept-Language", "pt-BR");
+                client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
+                client.DefaultRequestHeaders.Add("User-Agent", "Sigapi/1.0");
             })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
-                UseCookies = false, // Handled by SessionHandler.
-                AllowAutoRedirect = false, // Handled by RedirectHandler.
+                UseCookies = false,
+                AllowAutoRedirect = false,
                 AutomaticDecompression = DecompressionMethods.All
             })
             .AddHttpMessageHandler<RedirectHandler>()
-            .AddHttpMessageHandler<SessionHandler>()
+            .AddHttpMessageHandler<CookieHandler>()
             .AddStandardResilienceHandler(options =>
             {
                 options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(90);
@@ -296,22 +303,12 @@ public static class Services
                 ConfigureScrapingClientCircuitBreakerPolicy(options.CircuitBreaker);
             });
 
-        services.AddHttpClient(HttpClientFetcher.ClientName)
-            .ConfigureHttpClient(client =>
-            {
-                client.BaseAddress = new Uri("https://sigaa.ufpb.br");
-
-                client.DefaultRequestHeaders.Add("Accept", "*/*");
-                client.DefaultRequestHeaders.Add("Accept-Language", "pt-BR");
-                client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
-                client.DefaultRequestHeaders.Add("User-Agent", "Sigapi/1.0");
-            });
-
         services.Scan(selector => selector.FromAssemblies(ThisAssembly)
             .AddClasses(filter => filter.AssignableTo(typeof(IScrapingModelConfiguration<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 
+        // Account-related services.
         services.AddTransient<IEnrollmentProvider, EnrollmentProvider>();
         services.AddTransient<IEnrollmentSelector, EnrollmentSelector>();
         services.AddTransient<ILoginResponseHandler, CredentialsMismatchHandler>();
