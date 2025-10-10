@@ -16,9 +16,8 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
         builder.MapGet("/", HandleAsync)
             .CacheOutput(CachePolicies.Departments.ListDepartments)
             .WithSummary("Listar todos os departamentos")
-            .WithDescription("Obtém uma lista de todos os departamentos agrupados por seus respectivos " +
-                             "centros acadêmicos.")
-            .Produces<IEnumerable<DepartmentGroupResponse>>();
+            .WithDescription("Obtém uma lista de todos os departamentos de centros acadêmicos.")
+            .Produces<IEnumerable<DepartmentResponse>>();
     }
 
     private static async Task<IResult> HandleAsync(HttpContext context,
@@ -31,24 +30,22 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
             .WithFormData(form.BuildSubmissionData())
             .WithContextualSession(cancellationToken);
 
-        var departments = await scrapingEngine.ScrapeAllAsync<Department>(document, cancellationToken);
         var centers = await scrapingEngine.ScrapeAllAsync<DepartmentCenter>(document, cancellationToken);
+        var departments = await scrapingEngine.ScrapeAllAsync<Department>(document, cancellationToken);
 
-        // Create a response with the departments grouped by their centers.
-        var response = centers.GroupJoin(
-            inner: departments,
-            outerKeySelector: center => center.Acronym,
-            innerKeySelector: department => department.CenterAcronym,
-            resultSelector: (center, department) => new DepartmentGroupResponse
-            {
-                CenterName = center.Name,
-                CenterSlug = center.Slug,
-                Departments = department.Select(d => new DepartmentResponse
+        var response = departments.Join(
+                inner: centers,
+                outerKeySelector: d => d.CenterAcronym,
+                innerKeySelector: c => c.Acronym,
+                resultSelector: (d, c) => new DepartmentResponse
                 {
                     Id = d.Id,
                     Name = d.Name,
-                }).OrderBy(d => d.Name)
-            }).OrderBy(g => g.CenterName);
+                    CenterSlug = c.Slug,
+                    CenterName = c.Name
+                })
+            .OrderBy(r => r.CenterName)
+            .ThenBy(r => r.Name);
 
         return Results.Ok(response);
     }
