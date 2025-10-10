@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Polly;
 using Polly.Timeout;
 using Scalar.AspNetCore;
@@ -84,6 +85,8 @@ public static class Services
     {
         services.AddOpenApi(options =>
         {
+            options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
+            
             options.AddScalarTransformers();
 
             options.AddDocumentTransformer<ApiInfoDocumentTransformer>();
