@@ -1,5 +1,4 @@
 ﻿using Sigapi.Scraping.Browsing.Sessions;
-using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Scraping.Browsing.Handlers;
 

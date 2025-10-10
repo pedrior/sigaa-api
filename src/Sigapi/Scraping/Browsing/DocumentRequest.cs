@@ -3,7 +3,6 @@ using Sigapi.Scraping.Browsing.Handlers;
 using Sigapi.Scraping.Browsing.Sessions;
 using Sigapi.Scraping.Browsing.Sessions.Strategies;
 using Sigapi.Scraping.Document;
-using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Scraping.Browsing;
 

@@ -10,7 +10,6 @@ using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Browsing.Sessions;
 using Sigapi.Scraping.Document;
 using Sigapi.Scraping.Engine;
-using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Endpoints;
 

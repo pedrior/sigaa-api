@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Sigapi.Scraping.Configuration;
+﻿using Sigapi.Scraping.Configuration;
 
 namespace Sigapi.Scraping.Builders;
 

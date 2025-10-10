@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Sigapi.Features.Account.Models;
+﻿using Sigapi.Features.Account.Models;
 using Sigapi.Scraping.Builders;
 using Sigapi.Scraping.Configuration;
 using Sigapi.Scraping.Converters;

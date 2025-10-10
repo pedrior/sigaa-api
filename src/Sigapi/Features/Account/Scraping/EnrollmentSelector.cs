@@ -1,7 +1,6 @@
 ﻿using Sigapi.Features.Account.Models;
 using Sigapi.Scraping.Browsing;
 using Sigapi.Scraping.Exceptions;
-using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Features.Account.Scraping;
 

@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Sigapi.Scraping.Document;
+﻿namespace Sigapi.Scraping.Document;
 
 internal sealed partial class Element : IElement
 {

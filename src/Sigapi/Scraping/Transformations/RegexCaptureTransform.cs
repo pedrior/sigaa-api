@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Sigapi.Scraping.Transformations;
+﻿namespace Sigapi.Scraping.Transformations;
 
 internal sealed class RegexCaptureTransform : IValueTransform
 {

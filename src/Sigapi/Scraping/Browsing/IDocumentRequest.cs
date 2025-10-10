@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Sigapi.Scraping.Document;
-using ISession = Sigapi.Scraping.Browsing.Sessions.ISession;
 
 namespace Sigapi.Scraping.Browsing;
 

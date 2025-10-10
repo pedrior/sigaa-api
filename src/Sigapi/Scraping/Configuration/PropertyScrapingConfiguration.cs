@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Sigapi.Scraping.Configuration;
+﻿namespace Sigapi.Scraping.Configuration;
 
 internal abstract record PropertyScrapingConfiguration(PropertyInfo Property)
 {
