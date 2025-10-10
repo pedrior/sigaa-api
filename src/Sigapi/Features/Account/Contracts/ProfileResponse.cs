@@ -10,7 +10,7 @@ internal sealed record ProfileResponse
     public string Username { get; init; } = string.Empty;
 
     public string Enrollment { get; init; } = string.Empty;
-    
+
     public EnrollmentType EnrollmentType { get; init; }
 
     public IEnumerable<string> Enrollments { get; init; } = [];

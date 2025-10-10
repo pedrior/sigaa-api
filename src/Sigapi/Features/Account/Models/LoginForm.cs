@@ -7,7 +7,7 @@ internal sealed class LoginForm
 
     public Dictionary<string, string> Data { get; set; } = new();
 
-    public Dictionary<string, string> BuildSubmissionData(string username, string password) => new(Data)
+    public Dictionary<string, string> PrepareForSubmission(string username, string password) => new(Data)
     {
         ["form:login"] = username,
         ["form:senha"] = password,

@@ -25,7 +25,7 @@ internal sealed class LogoutEndpoint : IEndpoint
         ISessionManager sessionManager,
         CancellationToken cancellationToken)
     {
-        _ = await resourceLoader.LoadDocumentAsync(AccountPages.Logout)
+        await resourceLoader.LoadDocumentAsync(AccountPages.Logout)
             .WithUserSession(cancellationToken);
 
         await sessionManager.RevokeSessionAsync(userContext.SessionId, cancellationToken);

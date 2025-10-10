@@ -27,12 +27,12 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         var form = await GetDepartmentListingFormAsync(resourceLoader, scrapingEngine, cancellationToken);
-        var page = await resourceLoader.LoadDocumentAsync(form.Action)
+        var document = await resourceLoader.LoadDocumentAsync(form.Action)
             .WithFormData(form.BuildSubmissionData())
             .WithContextualSession(cancellationToken);
 
-        var departments = await scrapingEngine.ScrapeAllAsync<Department>(page, cancellationToken);
-        var centers = await scrapingEngine.ScrapeAllAsync<DepartmentCenter>(page, cancellationToken);
+        var departments = await scrapingEngine.ScrapeAllAsync<Department>(document, cancellationToken);
+        var centers = await scrapingEngine.ScrapeAllAsync<DepartmentCenter>(document, cancellationToken);
 
         // Create a response with the departments grouped by their centers.
         var response = centers.GroupJoin(
@@ -57,9 +57,9 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var page = await resourceLoader.LoadDocumentAsync(DepartmentPages.Listing)
+        var document = await resourceLoader.LoadDocumentAsync(DepartmentPages.Listing)
             .WithContextualSession(cancellationToken);
 
-        return scrapingEngine.Scrape<DepartmentListingForm>(page);
+        return scrapingEngine.Scrape<DepartmentListingForm>(document);
     }
 }

@@ -2,5 +2,5 @@
 
 internal interface IEndpoint
 {
-    static abstract void Map(IEndpointRouteBuilder builder);
+    static abstract void Map(IEndpointRouteBuilder router);
 }

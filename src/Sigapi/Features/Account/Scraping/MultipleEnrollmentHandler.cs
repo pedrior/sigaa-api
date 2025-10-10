@@ -17,16 +17,16 @@ internal sealed class MultipleEnrollmentHandler : ILoginResponseHandler
         this.enrollmentSelector = enrollmentSelector;
     }
 
-    public bool Evaluate(IDocument page)
+    public bool Evaluate(IDocument document)
     {
-        var isEnrollmentSelector = page.Url.AbsoluteUri.Contains("vinculos.jsf");
-        var isMultipleEnrollment = page.Query(EnrollmentSelector.EnrollmentSelectorLinkSelector) is not null;
+        var isEnrollmentSelectorDocument = document.Url.AbsoluteUri.Contains("vinculos.jsf");
+        var isMultipleEnrollment = document.Query(EnrollmentSelector.EnrollmentSelectorLinkSelector) is not null;
 
-        return isEnrollmentSelector || isMultipleEnrollment;
+        return isEnrollmentSelectorDocument || isMultipleEnrollment;
     }
 
     public async Task<User> HandleAsync(ISession session,
-        IDocument page,
+        IDocument document,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
     {

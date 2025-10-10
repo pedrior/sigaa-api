@@ -6,10 +6,10 @@ namespace Sigapi.Features.Account.Scraping;
 
 internal interface ILoginResponseHandler
 {
-    bool Evaluate(IDocument page);
+    bool Evaluate(IDocument document);
 
     Task<User> HandleAsync(ISession session,
-        IDocument page,
+        IDocument document,
         string? enrollment = null,
         CancellationToken cancellationToken = default);
 }

@@ -59,17 +59,18 @@ internal sealed class LoginEndpoint : IEndpoint
     {
         var session = sessionManager.CreateSession();
 
-        var loginPage = await resourceLoader.LoadDocumentAsync(AccountPages.Login)
+        var loginDocument = await resourceLoader.LoadDocumentAsync(AccountPages.Login)
             .WithSession(session, cancellationToken);
-        
-        var loginForm = scrapingEngine.Scrape<LoginForm>(loginPage);
-        var loginResponsePage = await resourceLoader.LoadDocumentAsync(loginForm.Action)
-                .WithFormData(loginForm.BuildSubmissionData(request.Username, request.Password))
-                .WithSession(session, cancellationToken);
+
+        var loginForm = scrapingEngine.Scrape<LoginForm>(loginDocument);
+        var loginFormData = loginForm.PrepareForSubmission(request.Username, request.Password);
+        var loginResponseDocument = await resourceLoader.LoadDocumentAsync(loginForm.Action)
+            .WithFormData(loginFormData)
+            .WithSession(session, cancellationToken);
 
         var user = await HandleLoginResponseAsync(
             session,
-            loginResponsePage,
+            loginResponseDocument,
             responseHandlers,
             request.Enrollment,
             cancellationToken);
@@ -87,15 +88,15 @@ internal sealed class LoginEndpoint : IEndpoint
     }
 
     private static Task<User> HandleLoginResponseAsync(ISession session,
-        IDocument page,
+        IDocument document,
         IEnumerable<ILoginResponseHandler> handlers,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
     {
-        var handler = handlers.FirstOrDefault(strategy => strategy.Evaluate(page));
+        var handler = handlers.FirstOrDefault(strategy => strategy.Evaluate(document));
         return handler is null
-            ? throw new LoginException($"No login response handler found for page {page.Url}.")
-            : handler.HandleAsync(session, page, enrollment, cancellationToken);
+            ? throw new LoginException($"No login response handler found for page {document.Url}.")
+            : handler.HandleAsync(session, document, enrollment, cancellationToken);
     }
 
     private static LoginResponse CreateAccessToken(string sessionId,

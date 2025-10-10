@@ -25,20 +25,11 @@ internal sealed class ListCentersEndpoint : IEndpoint
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var response = await ListCentersAsync(resourceLoader, scrapingEngine, cancellationToken);
-
-        return Results.Ok(response);
-    }
-
-    private static async Task<IEnumerable<CenterResponse>> ListCentersAsync(IResourceLoader resourceLoader,
-        IScrapingEngine scrapingEngine,
-        CancellationToken cancellationToken)
-    {
-        var page = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
+        var document = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
             .WithAnonymousSession(cancellationToken);
 
-        var centers = await scrapingEngine.ScrapeAllAsync<Center>(page, cancellationToken);
-        return centers
+        var centers = await scrapingEngine.ScrapeAllAsync<Center>(document, cancellationToken);
+        var response = centers
             .OrderBy(f => f.Name)
             .Select(f => new CenterResponse
             {
@@ -47,5 +38,7 @@ internal sealed class ListCentersEndpoint : IEndpoint
                 Name = f.Name,
                 Acronym = f.Acronym
             });
+
+        return Results.Ok(response);
     }
 }

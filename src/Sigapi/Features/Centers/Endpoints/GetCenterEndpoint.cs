@@ -49,10 +49,10 @@ internal sealed class GetCenterEndpoint : IEndpoint
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var centerListPage = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
+        var document = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
             .WithAnonymousSession(cancellationToken);
 
-        var centers = await scrapingEngine.ScrapeAllAsync<Center>(centerListPage, cancellationToken);
+        var centers = await scrapingEngine.ScrapeAllAsync<Center>(document, cancellationToken);
         return centers.FirstOrDefault(c => c.Id == idOrSlug || c.Slug == idOrSlug);
     }
 
@@ -61,52 +61,54 @@ internal sealed class GetCenterEndpoint : IEndpoint
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var centerPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetCenter(center.Id))
+        var centerDocumentTask = resourceLoader.LoadDocumentAsync(CenterPages.GetCenter(center.Id))
             .WithAnonymousSession(cancellationToken)
             .AsTask();
-        
-        var departmentsPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetDepartments(center.Id))
+
+        var departmentsDocumentTask = resourceLoader.LoadDocumentAsync(CenterPages.GetDepartments(center.Id))
             .WithAnonymousSession(cancellationToken)
             .AsTask();
-        
-        var undergraduateProgramsPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetUndergraduatePrograms(center.Id))
+
+        var undergraduateProgramsDocumentTask = resourceLoader.LoadDocumentAsync(
+                CenterPages.GetUndergraduatePrograms(center.Id))
             .WithAnonymousSession(cancellationToken)
             .AsTask();
-        
-        var postgraduateProgramsPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetPostgraduatePrograms(center.Id))
+
+        var postgraduateProgramsDocumentTask = resourceLoader.LoadDocumentAsync(
+                CenterPages.GetPostgraduatePrograms(center.Id))
             .WithAnonymousSession(cancellationToken)
             .AsTask();
-        
-        var researchesPageTask = resourceLoader.LoadDocumentAsync(CenterPages.GetResearches(center.Id))
+
+        var researchesDocumentTask = resourceLoader.LoadDocumentAsync(CenterPages.GetResearches(center.Id))
             .WithAnonymousSession(cancellationToken)
             .AsTask();
 
         await Task.WhenAll(
-            centerPageTask,
-            departmentsPageTask,
-            undergraduateProgramsPageTask,
-            postgraduateProgramsPageTask,
-            researchesPageTask);
+            centerDocumentTask,
+            departmentsDocumentTask,
+            undergraduateProgramsDocumentTask,
+            postgraduateProgramsDocumentTask,
+            researchesDocumentTask);
 
-        var centerPage = centerPageTask.Result;
-        var departmentsPage = departmentsPageTask.Result;
-        var undergraduateProgramsPage = undergraduateProgramsPageTask.Result;
-        var postgraduateProgramsPage = postgraduateProgramsPageTask.Result;
-        var researchesPage = researchesPageTask.Result;
+        var centerDocument = centerDocumentTask.Result;
+        var departmentsDocument = departmentsDocumentTask.Result;
+        var undergraduateProgramsDocument = undergraduateProgramsDocumentTask.Result;
+        var postgraduateProgramsDocument = postgraduateProgramsDocumentTask.Result;
+        var researchesDocument = researchesDocumentTask.Result;
 
-        var details = scrapingEngine.Scrape<CenterDetails>(centerPage);
+        var details = scrapingEngine.Scrape<CenterDetails>(centerDocument);
 
-        var departmentsTask = scrapingEngine.ScrapeAllAsync<Department>(departmentsPage, cancellationToken);
+        var departmentsTask = scrapingEngine.ScrapeAllAsync<Department>(departmentsDocument, cancellationToken);
 
         var undergraduateProgramsTask = scrapingEngine.ScrapeAllAsync<UndergraduateProgram>(
-            undergraduateProgramsPage,
+            undergraduateProgramsDocument,
             cancellationToken);
 
         var postgraduateProgramsTask = scrapingEngine.ScrapeAllAsync<GraduateProgram>(
-            postgraduateProgramsPage,
+            postgraduateProgramsDocument,
             cancellationToken);
 
-        var researchesTask = scrapingEngine.ScrapeAllAsync<Research>(researchesPage, cancellationToken);
+        var researchesTask = scrapingEngine.ScrapeAllAsync<Research>(researchesDocument, cancellationToken);
 
         await Task.WhenAll(departmentsTask, undergraduateProgramsTask, postgraduateProgramsTask, researchesTask);
 

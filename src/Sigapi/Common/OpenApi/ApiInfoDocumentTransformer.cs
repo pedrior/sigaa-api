@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 
 namespace Sigapi.Common.OpenApi;
@@ -13,8 +14,7 @@ internal sealed class ApiInfoDocumentTransformer : IOpenApiDocumentTransformer
         {
             Title = "SIGAPI",
             Description = "API REST segura e de alto desempenho para o Sistema Integrado de Gestão de Atividades " +
-                          "Acadêmicas (SIGAA) da Universidade Federal da Paraíba (UFPB).",
-            Version = "1.0.0"
+                          "Acadêmicas (SIGAA) da Universidade Federal da Paraíba (UFPB)."
         };
 
         return Task.CompletedTask;

@@ -10,13 +10,13 @@ public sealed class NotFoundProblem : IResult, IEndpointMetadataProvider, IStatu
 {
     private readonly ProblemHttpResult problem;
 
-    public NotFoundProblem(string message)
+    public NotFoundProblem(string detail)
     {
         problem = TypedResults.Problem
         (
             statusCode: StatusCode,
             title: "Not Found",
-            detail: message
+            detail: detail
         );
     }
 

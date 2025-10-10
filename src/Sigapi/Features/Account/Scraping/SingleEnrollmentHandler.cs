@@ -14,16 +14,16 @@ internal sealed class SingleEnrollmentHandler : ILoginResponseHandler
         this.enrollmentProvider = enrollmentProvider;
     }
 
-    public bool Evaluate(IDocument page)
+    public bool Evaluate(IDocument document)
     {
-        var isStudentPage = page.Url.AbsoluteUri.Contains("discente.jsf");
-        var isSingleEnrollment = page.Query(EnrollmentSelector.EnrollmentSelectorLinkSelector) is null;
+        var isStudentDocument = document.Url.AbsoluteUri.Contains("discente.jsf");
+        var isSingleEnrollment = document.Query(EnrollmentSelector.EnrollmentSelectorLinkSelector) is null;
 
-        return isStudentPage && isSingleEnrollment;
+        return isStudentDocument && isSingleEnrollment;
     }
 
     public async Task<User> HandleAsync(ISession session,
-        IDocument page,
+        IDocument document,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
     {

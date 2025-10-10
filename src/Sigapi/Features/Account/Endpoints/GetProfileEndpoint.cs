@@ -29,22 +29,11 @@ internal sealed class GetProfileEndpoint : IEndpoint
         IUserContext userContext,
         CancellationToken cancellationToken)
     {
-        var response = await GetProfileAsync(resourceLoader, scrapingEngine, userContext, cancellationToken);
-
-        return Results.Ok(response);
-    }
-
-    private static async Task<ProfileResponse> GetProfileAsync(IResourceLoader resourceLoader,
-        IScrapingEngine scrapingEngine,
-        IUserContext userContext,
-        CancellationToken cancellationToken = default)
-    {
-        var page = await resourceLoader.LoadDocumentAsync(AccountPages.Profile)
+        var document = await resourceLoader.LoadDocumentAsync(AccountPages.Profile)
             .WithUserSession(cancellationToken);
 
-        var profile = scrapingEngine.Scrape<Profile>(page);
-
-        return new ProfileResponse
+        var profile = scrapingEngine.Scrape<Profile>(document);
+        var response = new ProfileResponse
         {
             Name = profile.Name,
             Email = profile.Email,
@@ -59,5 +48,7 @@ internal sealed class GetProfileEndpoint : IEndpoint
             Interests = profile.Interests,
             Curriculum = profile.Curriculum,
         };
+
+        return Results.Ok(response);
     }
 }

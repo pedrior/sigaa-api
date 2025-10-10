@@ -4,12 +4,12 @@ namespace Sigapi.Common.Extensions;
 
 internal static class RouteHandlerBuilderExtensions
 {
-    public static RouteHandlerBuilder WithRequestValidation<TRequest>(this RouteHandlerBuilder builder)
+    public static RouteHandlerBuilder WithRequestValidation<TRequest>(this RouteHandlerBuilder route)
         where TRequest : class
     {
-        builder.AddEndpointFilter<ValidationFilter<TRequest>>()
+        route.AddEndpointFilter<ValidationFilter<TRequest>>()
             .ProducesValidationProblem();
 
-        return builder;
+        return route;
     }
 }

@@ -21,13 +21,13 @@ internal sealed class EnrollmentSelector : IEnrollmentSelector
         IEnumerable<Enrollment> enrollments,
         CancellationToken cancellationToken = default)
     {
-        var response = await resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector)
+        var document = await resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector)
             .WithFormData(enrollment.Data)
             .WithSession(session, cancellationToken);
 
-        return response.Url.AbsoluteUri.Contains("discente.jsf")
+        return document.Url.AbsoluteUri.Contains("discente.jsf")
             ? new User(enrollment, enrollments)
             : throw new ScrapingException(
-                $"Unexpected response after submitting enrollment selector form: {response.Url}.");
+                $"Unexpected response after submitting enrollment selector form: {document.Url}.");
     }
 }

@@ -7,11 +7,10 @@ internal sealed class SecurityTokenProvider : ISecurityTokenProvider
 {
     private const int TokenExpirationMinutes = 60;
 
-    private readonly SecurityTokenOptions options;
     private readonly TimeProvider time;
+    private readonly SecurityTokenOptions options;
 
-    public SecurityTokenProvider(TimeProvider time,
-        IOptions<SecurityTokenOptions> options)
+    public SecurityTokenProvider(TimeProvider time, IOptions<SecurityTokenOptions> options)
     {
         this.time = time;
         this.options = options.Value;

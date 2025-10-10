@@ -5,13 +5,13 @@ namespace Sigapi.Common.Cache;
 
 internal sealed class BaseCachePolicy : IOutputCachePolicy
 {
-    ValueTask IOutputCachePolicy.CacheRequestAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellationToken)
     {
-        var attemptOutputCaching = AttemptOutputCaching(context);
+        var cacheRequestAllowed = ShouldCacheRequest(context);
         
         context.EnableOutputCaching = true;
-        context.AllowCacheLookup = attemptOutputCaching;
-        context.AllowCacheStorage = attemptOutputCaching;
+        context.AllowCacheLookup = cacheRequestAllowed;
+        context.AllowCacheStorage = cacheRequestAllowed;
         context.AllowLocking = true;
 
         // Vary by any query by default.
@@ -20,21 +20,20 @@ internal sealed class BaseCachePolicy : IOutputCachePolicy
         return ValueTask.CompletedTask;
     }
 
-    ValueTask IOutputCachePolicy.ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellationToken) =>
-        ValueTask.CompletedTask;
+    public ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    {
+        return ValueTask.CompletedTask;
+    }
 
-    ValueTask IOutputCachePolicy.ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
     {
         var response = context.HttpContext.Response;
-
-        // Verify the existence of cookie headers.
         if (!StringValues.IsNullOrEmpty(response.Headers.SetCookie))
         {
             context.AllowCacheStorage = false;
             return ValueTask.CompletedTask;
         }
-
-        // Check response code.
+        
         if (response.StatusCode is not StatusCodes.Status200OK)
         {
             context.AllowCacheStorage = false;
@@ -43,25 +42,9 @@ internal sealed class BaseCachePolicy : IOutputCachePolicy
         return ValueTask.CompletedTask;
     }
 
-    private static bool AttemptOutputCaching(OutputCacheContext context)
+    private static bool ShouldCacheRequest(OutputCacheContext context)
     {
-        // Check if the current request fulfills the requirements to be cached.
-
-        var request = context.HttpContext.Request;
-
-        // Verify the method.
-        if (!HttpMethods.IsGet(request.Method) && !HttpMethods.IsHead(request.Method))
-        {
-            return false;
-        }
-
-        // Verify the existence of authorization headers.
-        // if (!StringValues.IsNullOrEmpty(request.Headers.Authorization) ||
-        //     request.HttpContext.User.Identity?.IsAuthenticated is true)
-        // {
-        //     return false;
-        // }
-
-        return true;
+        var method = context.HttpContext.Request.Method;
+        return HttpMethods.IsGet(method) || HttpMethods.IsHead(method);
     }
 }

@@ -19,10 +19,10 @@ internal sealed class EnrollmentProvider : IEnrollmentProvider
     public async Task<IEnumerable<Enrollment>> ListEnrollmentsAsync(ISession session,
         CancellationToken cancellationToken = default)
     {
-        var page = await resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector)
+        var document = await resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector)
             .WithSession(session, cancellationToken);
 
-        var enrollments = scrapingEngine.Scrape<UserEnrollments>(page);
+        var enrollments = scrapingEngine.Scrape<UserEnrollments>(document);
         return enrollments.Active
             .Concat(enrollments.Inactive)
             .Select(ApplyCommonEnrollmentData);
