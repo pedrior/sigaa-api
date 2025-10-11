@@ -22,7 +22,6 @@ public static class Application
         {
             options.AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme);
             options.WithTitle("Documentação SIGAA API (SIGAPI)")
-                .WithDefaultOpenAllTags()
                 .WithDynamicBaseServerUrl()
                 .WithSchemaPropertyOrder(PropertyOrder.Preserve)
                 .WithDefaultHttpClient(ScalarTarget.Node, ScalarClient.Axios);
