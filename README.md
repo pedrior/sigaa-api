@@ -21,7 +21,7 @@ Siga os passos abaixo para executar o projeto em seu ambiente de desenvolvimento
 
 ### Pré-requisitos
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 
 ### Execução
 
