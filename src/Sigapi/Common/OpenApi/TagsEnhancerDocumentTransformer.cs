@@ -1,6 +1,6 @@
 ﻿using System.Collections.Frozen;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Sigapi.Common.OpenApi.Constants;
 
 namespace Sigapi.Common.OpenApi;
@@ -21,9 +21,14 @@ internal sealed class TagsEnhancerDocumentTransformer : IOpenApiDocumentTransfor
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        foreach (var tag in document.Tags)
+        if (document.Tags is not { } tags)
         {
-            if (Descriptions.TryGetValue(tag.Name, out var description))
+            return Task.CompletedTask;
+        }
+
+        foreach (var tag in tags)
+        {
+            if (!string.IsNullOrEmpty(tag.Name) && Descriptions.TryGetValue(tag.Name, out var description))
             {
                 tag.Description = description;
             }

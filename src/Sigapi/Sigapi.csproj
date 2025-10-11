@@ -3,12 +3,19 @@
         <UserSecretsId>3e758d42-9975-4382-a891-8e374d4929ca</UserSecretsId>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
+    </PropertyGroup>
+    
     <ItemGroup>
         <PackageReference Include="AngleSharp" Version="1.3.0"/>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0"/>
         <PackageReference Include="JetBrains.Annotations" Version="2025.2.2"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9"/>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.9"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0-rc.1.25451.107"/>
         <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0"/>
         <PackageReference Include="Scalar.AspNetCore.Microsoft" Version="2.8.11" />
         <PackageReference Include="Scrutor" Version="6.1.0"/>

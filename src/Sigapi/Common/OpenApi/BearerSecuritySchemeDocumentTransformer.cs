@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Sigapi.Common.OpenApi;
 
@@ -28,9 +28,9 @@ internal sealed class BearerSecuritySchemeDocumentTransformer : IOpenApiDocument
 
         // Add the security scheme at the document level.
         document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
+        document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
         {
-            [JwtBearerDefaults.AuthenticationScheme] = new()
+            [JwtBearerDefaults.AuthenticationScheme] = new OpenApiSecurityScheme()
             {
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
@@ -43,14 +43,7 @@ internal sealed class BearerSecuritySchemeDocumentTransformer : IOpenApiDocument
         var securityRequirement = new OpenApiSecurityRequirement
         {
             {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                },
+                new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme),
                 [] // The list of scopes is empty for Bearer JWT.
             }
         };
@@ -70,8 +63,15 @@ internal sealed class BearerSecuritySchemeDocumentTransformer : IOpenApiDocument
                     continue;
                 }
 
-                var operationType = Enum.Parse<OperationType>(description.HttpMethod!, true);
-                pathItem.Operations[operationType].Security.Add(securityRequirement);
+                var method = new HttpMethod(description.HttpMethod!);
+                if (pathItem.Operations is not { } operations || 
+                    operations.GetValueOrDefault(method) is not { } operation)
+                {
+                    continue;
+                }
+
+                operation.Security ??= new List<OpenApiSecurityRequirement>();
+                operation.Security.Add(securityRequirement);
             }
         }
     }

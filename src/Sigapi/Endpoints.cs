@@ -10,8 +10,7 @@ internal static class Endpoints
 {
     public static void MapEndpoints(this WebApplication app)
     {
-        var root = app.MapGroup(string.Empty)
-            .WithOpenApi();
+        var root = app.MapGroup(string.Empty);
 
         root.MapAccountEndpoints();
         root.MapCenterEndpoints();
