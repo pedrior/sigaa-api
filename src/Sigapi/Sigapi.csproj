@@ -3,8 +3,16 @@
         <UserSecretsId>3e758d42-9975-4382-a891-8e374d4929ca</UserSecretsId>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\Sigapi.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\Sigapi.xml</DocumentationFile>
+    </PropertyGroup>
+
     <PropertyGroup>
-        <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
+        <NoWarn>1701;1702;CS1591</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup>
