@@ -1,19 +1,29 @@
 # SIGAA API (SIGAPI) 📚
 
-O **SIGAPI** é uma API REST **não oficial** para o **[Sistema Integrado de Gestão de Atividades Acadêmicas
-(SIGAA)](https://sigaa.ufpb.br/publico/)** da **[Universidade Federal da Paraíba (UFPB)](https://www.ufpb.br/)**,
-desenvolvida utilizando técnicas de _web scraping_. Seu objetivo principal é fornecer um acesso moderno, seguro e de
-alta performance a dados acadêmicos.
+Uma API REST **não oficial**, segura e de alto desempenho para o Sistema Integrado de Gestão de Atividades Acadêmicas 
+(SIGAA) da Universidade Federal da Paraíba (UFPB).
+
+## ✨ Visão Geral
+
+Esta API atua como um _wrapper_ sobre o SIGAA, extraindo dados através de _web scraping_ para fornecer uma interface 
+moderna e estruturada para desenvolvedores. O objetivo é simplificar a integração e a criação de novas aplicações que 
+utilizam informações acadêmicas da UFPB.
+
+![SIGAA API](/images/api-docs.png)
 
 > [!WARNING]
-> Este é um projeto independente e não possui qualquer afiliação com a UFPB, a Gerência de Segurança da Informação (GSI)
-> ou a Superintendência de Tecnologia da Informação (STI). A utilização desta API é de inteira responsabilidade do
-> usuário. As credenciais fornecidas são utilizadas exclusivamente para autenticação no SIGAA em nome do usuário e não
-> são armazenadas pela API.
+> Este é um projeto não oficial e não possui vínculo direto com a UFPB ou a Superintendência de Tecnologia da Informação
+> (STI). As informações são obtidas estão sujeitas a alterações conforme o site do SIGAA é atualizado.
 
-> [!WARNING]
-> O projeto está em desenvolvimento inicial e possui poucos recursos acessíveis no momento. Mais funcionalidades serão
-> adicionadas futuramente.
+## 🌟 Principais Funcionalidades
+
+- **Autenticação**: Gerenciamento de sessão seguro através de tokens JWT.
+- **Consulta de Perfil**: Acesso a informações detalhadas do perfil do estudante.
+- **Dados Públicos**: Acesso a informações sobre Centros e Departamentos Acadêmicos.
+
+> [!NOTE]
+> O projeto está em desenvolvimento inicial e possui poucos recursos acessíveis no momento. Novas funcionalidades estão
+> sendo adicionadas.
 
 ## 🚀 Executando
 
