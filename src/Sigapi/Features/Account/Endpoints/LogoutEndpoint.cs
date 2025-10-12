@@ -14,12 +14,20 @@ internal sealed class LogoutEndpoint : IEndpoint
     {
         route.MapPost("/logout", HandleAsync)
             .RequireRateLimiting(RateLimiterPolicies.Account.SessionManagement)
-            .WithSummary("Logout")
-            .WithDescription("Desconecta o estudante autenticado, invalidando sua sessão e token de acesso.")
             .Produces(StatusCodes.Status204NoContent);
     }
 
-    private static async Task<IResult> HandleAsync(HttpContext context,
+    /// <summary>
+    /// Encerra a sessão do estudante autenticado (Logout).
+    /// </summary>
+    /// <remarks>
+    /// Invalida o token de acesso atual, exigindo uma nova autenticação para futuras requisições.
+    /// Este endpoint deve ser chamado quando o usuário desejar encerrar sua sessão na aplicação.
+    /// </remarks>
+    /// <returns>Nenhum conteúdo.</returns>
+    /// <response code="204">Sessão encerrada com sucesso.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    internal static async Task<IResult> HandleAsync(HttpContext context,
         IResourceLoader resourceLoader,
         IUserContext userContext,
         ISessionManager sessionManager,

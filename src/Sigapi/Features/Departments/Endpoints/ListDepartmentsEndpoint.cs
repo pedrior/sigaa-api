@@ -15,12 +15,19 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
     {
         builder.MapGet("/", HandleAsync)
             .CacheOutput(CachePolicies.Departments.ListDepartments)
-            .WithSummary("Listar todos os departamentos")
-            .WithDescription("Obtém uma lista de todos os departamentos de centros acadêmicos.")
             .Produces<IEnumerable<DepartmentResponse>>();
     }
 
-    private static async Task<IResult> HandleAsync(HttpContext context,
+    /// <summary>
+    /// Lista todos os departamentos.
+    /// </summary>
+    /// <remarks>
+    /// Retorna uma lista com informações de todos os departamentos da instituição, incluindo o centro acadêmico
+    /// ao qual pertencem.
+    /// </remarks>
+    /// <returns>Uma lista de departamentos.</returns>
+    /// <response code="200">Retorna a lista de departamentos.</response>
+    internal static async Task<IResult> HandleAsync(HttpContext context,
         IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)

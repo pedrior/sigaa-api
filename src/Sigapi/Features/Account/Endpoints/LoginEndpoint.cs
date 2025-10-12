@@ -21,9 +21,6 @@ internal sealed class LoginEndpoint : IEndpoint
         route.MapPost("/login", HandleAsync)
             .RequireRateLimiting(RateLimiterPolicies.Account.SessionManagement)
             .WithRequestValidation<LoginRequest>()
-            .WithSummary("Login")
-            .WithDescription("Autentica um estudante usando suas credenciais e retorna um token de acesso para " +
-                             "requisições futuras.")
             .Accepts<LoginRequest>("application/json")
             .Produces<LoginResponse>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
@@ -46,8 +43,24 @@ internal sealed class LoginEndpoint : IEndpoint
                 .WithMessage("Must be a valid enrollment identifier consisting of digits only.");
         }
     }
-
-    private static async Task<IResult> HandleAsync(LoginRequest request,
+    
+    /// <summary>
+    /// Autentica um estudante e retorna um token de acesso (Login).
+    /// </summary>
+    /// <remarks>
+    /// Este endpoint realiza a autenticação de um estudante utilizando seu nome de usuário e senha.
+    /// Em caso de sucesso, um token JWT é gerado para ser utilizado em endpoints que requerem autenticação.
+    /// <br/><br/>
+    /// É possível especificar uma matrícula (<c>enrollment</c>) para vincular a sessão a um curso específico.
+    /// Se nenhuma matrícula for fornecida e o estudante possuir múltiplos vínculos, a matrícula mais recente será
+    /// utilizada por padrão.
+    /// </remarks>
+    /// <param name="request">O corpo da requisição contendo o nome de usuário, senha e opcionalmente a matrícula.</param>
+    /// <returns>Um objeto contendo o token de acesso e sua data de expiração.</returns>
+    /// <response code="200">Autenticação bem-sucedida. Retorna o token de acesso.</response>
+    /// <response code="400">A requisição é inválida. Verifique os campos enviados.</response>
+    /// <response code="401">Credenciais inválidas (usuário/senha) ou matrícula não encontrada para o usuário.</response>
+    internal static async Task<IResult> HandleAsync(LoginRequest request,
         HttpContext context,
         IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,

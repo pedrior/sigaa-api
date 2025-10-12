@@ -1,5 +1,4 @@
 ﻿using Sigapi.Common.Endpoints;
-using Sigapi.Common.OpenApi.Constants;
 using Sigapi.Features.Account.Endpoints;
 using Sigapi.Features.Centers.Endpoints;
 using Sigapi.Features.Departments.Endpoints;
@@ -8,6 +7,10 @@ namespace Sigapi;
 
 internal static class Endpoints
 {
+    internal const string AuthAndProfileTag = "Autenticação e Perfil";
+    internal const string AcademicCenterTag = "Centros Acadêmicos";
+    internal const string AcademicDepartmentTag = "Departamentos Acadêmicos";
+    
     public static void MapEndpoints(this WebApplication app)
     {
         var root = app.MapGroup(string.Empty);
@@ -20,7 +23,7 @@ internal static class Endpoints
     private static void MapAccountEndpoints(this IEndpointRouteBuilder route)
     {
         var group = route.MapGroup("account")
-            .WithTags(Tags.Account);
+            .WithTags(AuthAndProfileTag);
 
         group.MapPublicGroup()
             .MapEndpoint<LoginEndpoint>();
@@ -33,7 +36,7 @@ internal static class Endpoints
     private static void MapCenterEndpoints(this IEndpointRouteBuilder route)
     {
         var group = route.MapPublicGroup("centers")
-            .WithTags(Tags.Centers);
+            .WithTags(AcademicCenterTag);
 
         group.MapEndpoint<GetCenterEndpoint>()
             .MapEndpoint<ListCentersEndpoint>();
@@ -42,7 +45,7 @@ internal static class Endpoints
     private static void MapDepartmentEndpoints(this IEndpointRouteBuilder route)
     {
         var group = route.MapPublicGroup("departments")
-            .WithTags(Tags.Departments);
+            .WithTags(AcademicDepartmentTag);
 
         group.MapEndpoint<ListDepartmentsEndpoint>();
     }

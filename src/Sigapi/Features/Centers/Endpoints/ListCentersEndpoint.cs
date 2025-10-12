@@ -15,12 +15,19 @@ internal sealed class ListCentersEndpoint : IEndpoint
     {
         route.MapGet("/", HandleAsync)
             .CacheOutput(CachePolicies.Centers.ListCenters)
-            .WithSummary("Listar todos os centros acadêmico")
-            .WithDescription("Retorna uma lista com todas os centros acadêmico disponíveis.")
             .Produces<IEnumerable<CenterResponse>>();
     }
 
-    private static async Task<IResult> HandleAsync(HttpContext context,
+    /// <summary>
+    /// Lista todos os centros acadêmicos.
+    /// </summary>
+    /// <remarks>
+    /// Retorna uma lista com informações básicas de todos os centros acadêmicos da instituição,
+    /// como ID, nome, sigla e slug.
+    /// </remarks>
+    /// <returns>Uma lista de centros acadêmicos.</returns>
+    /// <response code="200">Retorna a lista de centros acadêmicos.</response>
+    internal static async Task<IResult> HandleAsync(HttpContext context,
         IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)

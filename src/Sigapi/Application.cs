@@ -21,7 +21,8 @@ public static class Application
         app.MapScalarApiReference("/docs", options =>
         {
             options.AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme);
-            options.WithTitle("Documentação SIGAA API (SIGAPI)")
+            options.WithTitle("SIGAA UFPB API")
+                .WithTheme(ScalarTheme.Default)
                 .WithDynamicBaseServerUrl()
                 .WithSchemaPropertyOrder(PropertyOrder.Preserve)
                 .WithDefaultHttpClient(ScalarTarget.Node, ScalarClient.Axios);

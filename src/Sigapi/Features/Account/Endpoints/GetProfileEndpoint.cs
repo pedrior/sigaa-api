@@ -18,12 +18,20 @@ internal sealed class GetProfileEndpoint : IEndpoint
         route.MapGet("/profile", HandleAsync)
             .CacheOutput(CachePolicies.Account.GetProfile)
             .RequireRateLimiting(RateLimiterPolicies.Authenticated)
-            .WithSummary("Obter Perfil")
-            .WithDescription("Retorna as informações de perfil do estudante autenticado.")
             .Produces<ProfileResponse>();
     }
 
-    private static async Task<IResult> HandleAsync(HttpContext context,
+    /// <summary>
+    /// Obtém o perfil do estudante autenticado.
+    /// </summary>
+    /// <remarks>
+    /// Retorna informações detalhadas do perfil do estudante associado ao token de autenticação,
+    /// como nome, e-mail, matrícula, foto e outros dados pessoais.
+    /// </remarks>
+    /// <returns>O perfil detalhado do estudante.</returns>
+    /// <response code="200">Retorna as informações do perfil do estudante.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    internal static async Task<IResult> HandleAsync(HttpContext context,
         IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
         IUserContext userContext,

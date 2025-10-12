@@ -16,13 +16,21 @@ internal sealed class GetCenterEndpoint : IEndpoint
     {
         route.MapGet("/{idOrSlug}", HandleAsync)
             .CacheOutput(CachePolicies.Centers.GetCenter)
-            .WithSummary("Obter centro acadêmico por ID ou Slug")
-            .WithDescription("Obtém informações detalhadas sobre um centro acadêmico específico a partir de seu ID " +
-                             "ou slug (ex: 'centro-de-informatica').")
             .Produces<CenterDetailsResponse>();
     }
 
-    private static async Task<IResult> HandleAsync(string idOrSlug,
+    /// <summary>
+    /// Obtém detalhes de um centro acadêmico específico.
+    /// </summary>
+    /// <remarks>
+    /// Retorna informações detalhadas de um centro acadêmico, incluindo departamentos, cursos e projetos de
+    /// pesquisa associados. A busca pode ser feita tanto pelo ID numérico quanto pelo <c>slug</c> (nome amigável para URL).
+    /// </remarks>
+    /// <param name="idOrSlug" example="centro-de-informatica">O ID ou o slug do centro acadêmico a ser consultado.</param>
+    /// <returns>Os detalhes do centro acadêmico.</returns>
+    /// <response code="200">Retorna os detalhes do centro acadêmico solicitado.</response>
+    /// <response code="404">Se o centro acadêmico com o ID ou slug especificado não for encontrado.</response>
+    internal static async Task<IResult> HandleAsync(string idOrSlug,
         HttpContext context,
         IResourceLoader resourceLoader,
         IScrapingEngine scrapingEngine,
