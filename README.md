@@ -1,4 +1,4 @@
-# SIGAA API (SIGAPI) 📚
+# SIGAA API 📚
 
 Uma API REST **não oficial**, segura e de alto desempenho para o Sistema Integrado de Gestão de Atividades Acadêmicas 
 (SIGAA) da Universidade Federal da Paraíba (UFPB).
