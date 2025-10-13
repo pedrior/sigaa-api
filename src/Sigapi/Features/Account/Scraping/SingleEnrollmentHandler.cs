@@ -31,7 +31,7 @@ internal sealed class SingleEnrollmentHandler : ILoginResponseHandler
 
         // We know that the user has only one enrollment, but we still return an error
         // if the enrollment provided by the user doesn't match the one we found.
-        if (enrollment is not null && enrollment != foundEnrollment.Number)
+        if (!string.IsNullOrEmpty(enrollment) && enrollment != foundEnrollment.Number)
         {
             throw new InvalidEnrollmentException();
         }
