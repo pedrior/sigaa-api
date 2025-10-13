@@ -1,5 +1,4 @@
 ﻿using Sigapi.Common.Endpoints;
-using Sigapi.Common.Extensions;
 using Sigapi.Common.RateLimiter;
 using Sigapi.Common.Security.Tokens;
 using Sigapi.Features.Account.Contracts;
@@ -20,28 +19,9 @@ internal sealed class LoginEndpoint : IEndpoint
     {
         route.MapPost("/login", HandleAsync)
             .RequireRateLimiting(RateLimiterPolicies.Account.SessionManagement)
-            .WithRequestValidation<LoginRequest>()
             .Accepts<LoginRequest>("application/json")
             .Produces<LoginResponse>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
-    }
-
-    internal sealed class RequestValidator : AbstractValidator<LoginRequest>
-    {
-        public RequestValidator()
-        {
-            RuleFor(x => x.Username)
-                .NotEmpty()
-                .WithMessage("Must not be null or empty.");
-
-            RuleFor(x => x.Password)
-                .NotEmpty()
-                .WithMessage("Must not be null or empty.");
-
-            RuleFor(x => x.Enrollment)
-                .Must(v => string.IsNullOrEmpty(v) || v.All(char.IsDigit))
-                .WithMessage("Must be a valid enrollment identifier consisting of digits only.");
-        }
     }
     
     /// <summary>

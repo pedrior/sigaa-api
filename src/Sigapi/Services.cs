@@ -238,9 +238,6 @@ public static class Services
         });
     }
 
-    private static void AddValidation(this IServiceCollection services) =>
-        services.AddValidatorsFromAssembly(ThisAssembly, includeInternalTypes: true);
-
     private static void AddCache(this IServiceCollection services)
     {
         services.AddMemoryCache();

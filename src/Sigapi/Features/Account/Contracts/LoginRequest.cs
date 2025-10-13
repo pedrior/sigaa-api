@@ -1,19 +1,23 @@
-﻿namespace Sigapi.Features.Account.Contracts;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Sigapi.Features.Account.Contracts;
 
 /// <summary>
 /// Representa o corpo da requisição para autenticação de um estudante.
 /// </summary>
 [UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
-internal sealed record LoginRequest
+public sealed record LoginRequest
 {
     /// <summary>
     /// O nome de usuário (login) do estudante.
     /// </summary>
+    [Required(ErrorMessage = "Must not be null or empty."), MinLength(6)]
     public string Username { get; init; } = null!;
 
     /// <summary>
     /// A senha de acesso do estudante.
     /// </summary>
+    [Required(ErrorMessage = "Must not be null or empty.")]
     public string Password { get; init; } = null!;
 
     /// <summary>
@@ -24,5 +28,6 @@ internal sealed record LoginRequest
     /// o sistema utilizará a mais recente por padrão.
     /// </remarks>
     /// <example>20190112416</example>
+    [RegularExpression("^[0-9]*$", ErrorMessage = "Must be a valid enrollment identifier consisting of digits only.")]
     public string? Enrollment { get; init; }
 }
