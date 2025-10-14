@@ -22,7 +22,7 @@ internal static class Endpoints
 
     private static void MapAccountEndpoints(this IEndpointRouteBuilder route)
     {
-        var group = route.MapGroup("account")
+        var group = route.MapGroup("conta")
             .WithTags(AuthAndProfileTag);
 
         group.MapPublicGroup()
@@ -35,7 +35,7 @@ internal static class Endpoints
 
     private static void MapCenterEndpoints(this IEndpointRouteBuilder route)
     {
-        var group = route.MapPublicGroup("centers")
+        var group = route.MapPublicGroup("centros")
             .WithTags(AcademicCenterTag);
 
         group.MapEndpoint<GetCenterEndpoint>()
@@ -44,7 +44,7 @@ internal static class Endpoints
     
     private static void MapDepartmentEndpoints(this IEndpointRouteBuilder route)
     {
-        var group = route.MapPublicGroup("departments")
+        var group = route.MapPublicGroup("departamentos")
             .WithTags(AcademicDepartmentTag);
 
         group.MapEndpoint<ListDepartmentsEndpoint>();

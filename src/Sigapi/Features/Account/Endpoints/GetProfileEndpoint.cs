@@ -15,7 +15,7 @@ internal sealed class GetProfileEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder route)
     {
-        route.MapGet("/profile", HandleAsync)
+        route.MapGet("/perfil", HandleAsync)
             .CacheOutput(CachePolicies.Account.GetProfile)
             .RequireRateLimiting(RateLimiterPolicies.Authenticated)
             .Produces<ProfileResponse>();
