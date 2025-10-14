@@ -27,7 +27,6 @@ public sealed record LoginRequest
     /// Este campo é opcional. Se não for especificado e o estudante possuir mais de uma matrícula,
     /// o sistema utilizará a mais recente por padrão.
     /// </remarks>
-    /// <example>"20190112416"</example>
     [RegularExpression("^[0-9]*$", ErrorMessage = "Must be a valid enrollment identifier consisting of digits only.")]
     public string? Enrollment { get; init; }
 }
