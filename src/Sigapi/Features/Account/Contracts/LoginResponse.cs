@@ -1,4 +1,6 @@
-﻿namespace Sigapi.Features.Account.Contracts;
+﻿using System.Text.Json.Serialization;
+
+namespace Sigapi.Features.Account.Contracts;
 
 /// <summary>
 /// Representa a resposta de uma autenticação bem-sucedida.
@@ -13,10 +15,12 @@ internal sealed record LoginResponse
     /// Este token deve ser enviado no cabeçalho <c>Authorization</c> de requisições subsequentes como
     /// <c>Bearer {token}</c>.
     /// </remarks>
+    [JsonPropertyName("token_acesso")]
     public string Token { get; init; } = null!;
 
     /// <summary>
     /// A data e hora (UTC) em que o token de acesso expira.
     /// </summary>
+    [JsonPropertyName("expira_em")]
     public DateTimeOffset ExpiresAt { get; init; }
 }

@@ -1,4 +1,6 @@
-﻿namespace Sigapi.Features.Centers.Contracts;
+﻿using System.Text.Json.Serialization;
+
+namespace Sigapi.Features.Centers.Contracts;
 
 /// <summary>
 /// Representa os dados básicos de um centro acadêmico.
@@ -19,10 +21,12 @@ internal sealed record CenterResponse
     /// <summary>
     /// O nome completo do centro acadêmico.
     /// </summary>
+    [JsonPropertyName("nome")]
     public string Name { get; init; } = null!;
 
     /// <summary>
     /// A sigla do centro acadêmico.
     /// </summary>
+    [JsonPropertyName("sigla")]
     public string Acronym { get; init; } = null!;
 }

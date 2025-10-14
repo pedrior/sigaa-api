@@ -1,4 +1,6 @@
-﻿namespace Sigapi.Features.Centers.Contracts;
+﻿using System.Text.Json.Serialization;
+
+namespace Sigapi.Features.Centers.Contracts;
 
 /// <summary>
 /// Representa os dados de um departamento dentro de um centro acadêmico.
@@ -14,5 +16,6 @@ internal sealed record DepartmentResponse
     /// <summary>
     /// O nome do departamento.
     /// </summary>
+    [JsonPropertyName("nome")]
     public string Name { get; init; } = string.Empty;
 }

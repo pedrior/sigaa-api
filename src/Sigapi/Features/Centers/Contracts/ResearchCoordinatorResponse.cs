@@ -1,4 +1,6 @@
-﻿namespace Sigapi.Features.Centers.Contracts;
+﻿using System.Text.Json.Serialization;
+
+namespace Sigapi.Features.Centers.Contracts;
 
 /// <summary>
 /// Representa o professor coordenador de um projeto de pesquisa.
@@ -14,5 +16,6 @@ internal sealed record ResearchCoordinatorResponse
     /// <summary>
     /// O nome do professor coordenador.
     /// </summary>
+    [JsonPropertyName("nome")]
     public string Name { get; init; } = string.Empty;
 }
