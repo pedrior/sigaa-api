@@ -1,18 +1,18 @@
 ﻿namespace Sigapi.Features.Account.Contracts;
 
 /// <summary>
-/// Representa os tipos de matrícula disponíveis.
+/// Representa os tipos de programas acadêmicos ao quais um estudante pode estar vinculado.
 /// </summary>
 [UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
-internal enum EnrollmentType
+internal enum ProgramType
 {
     /// <summary>
-    /// Matrícula em programa de graduação.
+    /// Programa de graduação.
     /// </summary>
     Undergraduate,
     
     /// <summary>
-    /// Matrícula em programa de pós-graduação.
+    /// Programa de pós-graduação.
     /// </summary>
     Postgraduate
 }

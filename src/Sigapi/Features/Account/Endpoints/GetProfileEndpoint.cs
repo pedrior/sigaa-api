@@ -47,9 +47,9 @@ internal sealed class GetProfileEndpoint : IEndpoint
             Email = profile.Email,
             Username = userContext.Username,
             Enrollment = userContext.Enrollment,
-            EnrollmentType = profile.IsProgramCompletionAvailable
-                ? EnrollmentType.Undergraduate
-                : EnrollmentType.Postgraduate,
+            ProgramType = profile.IsProgramCompletionAvailable
+                ? ProgramType.Undergraduate
+                : ProgramType.Postgraduate,
             Enrollments = userContext.Enrollments,
             Photo = profile.Photo,
             Biography = profile.Biography,

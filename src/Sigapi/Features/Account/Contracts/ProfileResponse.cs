@@ -27,9 +27,9 @@ internal sealed record ProfileResponse
     public string Enrollment { get; init; } = string.Empty;
 
     /// <summary>
-    /// O tipo de vínculo da matrícula ativa.
+    /// O tipo de programa ao qual o estudante está vinculado.
     /// </summary>
-    public EnrollmentType EnrollmentType { get; init; }
+    public ProgramType ProgramType { get; init; }
 
     /// <summary>
     /// Uma lista com todas as matrículas (ativas e inativas) associadas ao estudante.
