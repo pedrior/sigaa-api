@@ -123,7 +123,7 @@ public sealed class ScrapingEngineTests
 
         // Assert
         results.Should().HaveCount(2);
-        results.Should().ContainInOrder(model1, model2);
+        results.Should().BeEquivalentTo([model1, model2]); // ScrapeAllAsync doesn't guarantee order.
     }
 
     [Fact]
