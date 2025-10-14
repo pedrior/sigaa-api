@@ -47,7 +47,7 @@ cd sigaa-api
 Execute o comando abaixo na raiz do projeto para iniciar o armazenamento de segredos:
 
 ```bash
-dotnet user-secrets init --project src/Sigapi/
+dotnet user-secrets init --project src/Sigaa.Api/
 ```
 
 > [!NOTE]
@@ -57,7 +57,7 @@ dotnet user-secrets init --project src/Sigapi/
 Defina a chave usada para assinar tokens `JWT`:
 
 ```bash
-dotnet user-secrets set --project src/Sigapi/ "Jwt:Key" "<chave-segura-de-256-bits>"
+dotnet user-secrets set --project src/Sigaa.Api/ "Jwt:Key" "<chave-segura-de-256-bits>"
 ```
 
 > [!TIP]
