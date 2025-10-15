@@ -3,12 +3,12 @@
 namespace Sigaa.Api.UnitTests.Common.Scraping.Networking.Sessions;
 
 [TestSubject(typeof(SessionManager))]
-public sealed class SessionManagerTests
+public sealed class SessionManagerTest
 {
     private readonly ISessionStore sessionStore;
     private readonly SessionManager sessionManager;
 
-    public SessionManagerTests()
+    public SessionManagerTest()
     {
         sessionStore = A.Fake<ISessionStore>();
         sessionManager = new SessionManager(sessionStore);

@@ -7,14 +7,14 @@ using Sigaa.Api.Common.Scraping.Document;
 namespace Sigaa.Api.UnitTests.Common.Scraping;
 
 [TestSubject(typeof(ScrapingEngine))]
-public sealed class ScrapingEngineTests
+public sealed class ScrapingEngineTest
 {
     private readonly IModelScraperFactory modelScraperFactory;
     private readonly IScrapingModelConfigurationProvider configProvider;
     private readonly IElement rootElement;
     private readonly ScrapingEngine sut;
 
-    public ScrapingEngineTests()
+    public ScrapingEngineTest()
     {
         modelScraperFactory = A.Fake<IModelScraperFactory>();
         configProvider = A.Fake<IScrapingModelConfigurationProvider>();

@@ -3,7 +3,7 @@
 namespace Sigaa.Api.UnitTests.Common.Scraping.Converters;
 
 [TestSubject(typeof(ConversionService))]
-public class ConversionServiceTests
+public class ConversionServiceTest
 {
     private readonly ConversionService sut = new();
     private readonly IValueConverter converter = A.Fake<IValueConverter>();

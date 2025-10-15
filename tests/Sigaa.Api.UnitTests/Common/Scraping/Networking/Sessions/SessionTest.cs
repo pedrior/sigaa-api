@@ -3,7 +3,7 @@
 namespace Sigaa.Api.UnitTests.Common.Scraping.Networking.Sessions;
 
 [TestSubject(typeof(Session))]
-public sealed class SessionTests
+public sealed class SessionTest
 {
     [Fact]
     public void IsExpired_WhenExpiresAtIsInTheFuture_ShouldBeFalse()

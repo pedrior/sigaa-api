@@ -5,7 +5,7 @@ using Sigaa.Api.Common.Scraping.Browsing.Sessions;
 namespace Sigaa.Api.UnitTests.Common.Scraping.Networking.Sessions;
 
 [TestSubject(subject: typeof(CookieHandler))]
-public sealed class CookieHandlerTests
+public sealed class CookieHandlerTest
 {
     private static (HttpClient client, MockHttpMessageHandler handler) CreateTestClient()
     {

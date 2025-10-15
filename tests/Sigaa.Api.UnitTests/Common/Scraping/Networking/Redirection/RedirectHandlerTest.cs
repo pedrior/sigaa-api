@@ -6,7 +6,7 @@ using Sigaa.Api.Common.Scraping.Browsing.Handlers;
 namespace Sigaa.Api.UnitTests.Common.Scraping.Networking.Redirection;
 
 [TestSubject(typeof(RedirectHandler))]
-public sealed class RedirectHandlerTests
+public sealed class RedirectHandlerTest
 {
     private readonly ILogger<RedirectHandler> logger = A.Fake<ILogger<RedirectHandler>>();
 
