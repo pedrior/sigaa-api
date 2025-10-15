@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Sigaa.Api.Common.Scraping.Browsing.Handlers;
 
-namespace Sigaa.Api.UnitTests.Common.Scraping.Networking.Redirection;
+namespace Sigaa.Api.UnitTests.Common.Scraping.Browsing.Handlers;
 
 [TestSubject(typeof(RedirectHandler))]
 public sealed class RedirectHandlerTest

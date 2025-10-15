@@ -2,7 +2,7 @@
 using Sigaa.Api.Common.Scraping.Browsing.Handlers;
 using Sigaa.Api.Common.Scraping.Browsing.Sessions;
 
-namespace Sigaa.Api.UnitTests.Common.Scraping.Networking.Sessions;
+namespace Sigaa.Api.UnitTests.Common.Scraping.Browsing.Handlers;
 
 [TestSubject(subject: typeof(CookieHandler))]
 public sealed class CookieHandlerTest
