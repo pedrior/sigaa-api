@@ -6,10 +6,18 @@ namespace Sigaa.Api.Common.Exceptions;
 
 internal sealed class GlobalExceptionHandler : IExceptionHandler
 {
+    private readonly ILogger<GlobalExceptionHandler> logger;
+
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+    {
+        this.logger = logger;
+    }
+    
     public async ValueTask<bool> TryHandleAsync(HttpContext context,
         Exception exception,
         CancellationToken cancellationToken)
     {
+        logger.LogError(exception, "An unhandled exception occurred.");
         var (statusCode, title) = GetStatusCodeForException(exception);
         await Results.Problem(statusCode: statusCode, title: title)
             .ExecuteAsync(context);
