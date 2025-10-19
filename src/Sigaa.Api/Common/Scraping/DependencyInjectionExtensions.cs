@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Http.Resilience;
 using Polly;
 using Polly.Timeout;
-using Sigaa.Api.Common.Scraping.Browsing;
-using Sigaa.Api.Common.Scraping.Browsing.Handlers;
-using Sigaa.Api.Common.Scraping.Browsing.Sessions;
-using Sigaa.Api.Common.Scraping.Browsing.Sessions.Strategies;
+using Sigaa.Api.Common.Scraping.Client;
+using Sigaa.Api.Common.Scraping.Client.Redirects;
+using Sigaa.Api.Common.Scraping.Client.Sessions;
+using Sigaa.Api.Common.Scraping.Client.Sessions.Cookies;
+using Sigaa.Api.Common.Scraping.Client.Sessions.Storages;
 using Sigaa.Api.Common.Scraping.Configuration;
 using Sigaa.Api.Common.Scraping.Converters;
 using Sigaa.Api.Common.Scraping.Document;
@@ -19,9 +20,7 @@ internal static class ScrapingServicesExtensions
     {
         builder.Services.RegisterCoreScrapingServices();
         builder.Services.RegisterScrapingModelServices();
-        builder.Services.RegisterSessionManagement();
-        builder.Services.RegisterHttpDelegatingHandlers();
-        builder.Services.RegisterResourceLoaderClient();
+        builder.Services.RegisterClientServices();
 
         return builder;
     }
@@ -45,37 +44,28 @@ internal static class ScrapingServicesExtensions
         services.AddSingleton<IPropertyScraper, DictionaryPropertyScraper>();
     }
 
-    private static void RegisterSessionManagement(this IServiceCollection services)
+    private static void RegisterClientServices(this IServiceCollection services)
     {
-        services.AddSingleton<ISessionManager, SessionManager>();
-        services.AddSingleton<ISessionStore, SessionStore>();
-        services.AddTransient<AnonymousSessionStrategy>();
-        services.AddTransient<ContextualSessionStrategy>();
-        services.AddTransient<UserSessionStrategy>();
-        services.AddTransient<ISessionStrategyProvider, SessionStrategyProvider>();
-        services.AddScoped<IScopedSessionContext, ScopedSessionContext>();
-    }
+        services.AddOptionsWithValidateOnStart<FetcherClientOptions>()
+            .BindConfiguration(FetcherClientOptions.SectionName)
+            .ValidateDataAnnotations();
 
-    private static void RegisterHttpDelegatingHandlers(this IServiceCollection services)
-    {
+        services.AddTransient<ISessionStorageResolver, SessionStorageResolver>();
+        services.AddKeyedScoped<ISessionStorage, PersistentSessionStorage>(SessionPolicy.Persistent);
+        services.AddKeyedScoped<ISessionStorage, EphemeralSessionStorage>(SessionPolicy.Ephemeral);
+        services.AddKeyedSingleton<ISessionStorage, TransientSessionStorage>(SessionPolicy.Transient);
+
+        services.AddScoped<ISessionRevoker, SessionRevoker>();
+        services.AddScoped<ISessionDetailsAccessor, SessionDetailsAccessor>();
+
         services.AddTransient<CookieHandler>();
         services.AddTransient<RedirectHandler>();
-    }
 
-    private static void RegisterResourceLoaderClient(this IServiceCollection services)
-    {
-        services.AddHttpClient<IResourceLoader, ResourceLoader>()
+        services.AddHttpClient<IFetcher, Fetcher>()
             .ConfigureHttpClient(client =>
             {
                 // Handled by resilience policies.
                 client.Timeout = Timeout.InfiniteTimeSpan;
-
-                client.BaseAddress = new Uri("https://sigaa.ufpb.br");
-
-                client.DefaultRequestHeaders.Add("Accept", "*/*");
-                client.DefaultRequestHeaders.Add("Accept-Language", "pt-BR");
-                client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
-                client.DefaultRequestHeaders.Add("User-Agent", "SIGAA API/1.0");
             })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {

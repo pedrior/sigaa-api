@@ -1,4 +1,4 @@
-﻿using Sigaa.Api.Common.Scraping.Browsing;
+﻿using Sigaa.Api.Common.Scraping.Client;
 using Sigaa.Api.Common.Scraping.Exceptions;
 using Sigaa.Api.Features.Account.Models;
 
@@ -7,22 +7,21 @@ namespace Sigaa.Api.Features.Account.Scraping;
 internal sealed class EnrollmentSelector : IEnrollmentSelector
 {
     public const string EnrollmentSelectorLinkSelector = "a[href*='vinculos/listar']";
-    
-    private readonly IResourceLoader resourceLoader;
 
-    public EnrollmentSelector(IResourceLoader resourceLoader)
+    private readonly IFetcher fetcher;
+
+    public EnrollmentSelector(IFetcher fetcher)
     {
-        this.resourceLoader = resourceLoader;
+        this.fetcher = fetcher;
     }
 
-    public async Task<User> SelectAsync(ISession session,
-        Enrollment enrollment,
+    public async Task<User> SelectAsync(Enrollment enrollment,
         IEnumerable<Enrollment> enrollments,
         CancellationToken cancellationToken = default)
     {
-        var document = await resourceLoader.LoadDocumentAsync(AccountPages.EnrollmentSelector)
+        var document = await fetcher.FetchDocumentAsync(AccountPages.EnrollmentSelector, cancellationToken)
             .WithFormData(enrollment.Data)
-            .WithSession(session, cancellationToken);
+            .WithPersistentSession();
 
         return document.Url.AbsoluteUri.Contains("discente.jsf")
             ? new User(enrollment, enrollments)

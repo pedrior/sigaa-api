@@ -21,12 +21,11 @@ internal sealed class SingleEnrollmentHandler : ILoginResponseHandler
         return isStudentDocument && isSingleEnrollment;
     }
 
-    public async Task<User> HandleAsync(ISession session,
-        IDocument document,
+    public async Task<User> HandleAsync(IDocument document,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
     {
-        var enrollments = await enrollmentProvider.ListEnrollmentsAsync(session, cancellationToken);
+        var enrollments = await enrollmentProvider.ListEnrollmentsAsync(cancellationToken);
         var foundEnrollment = enrollments.First();
 
         // We know that the user has only one enrollment, but we still return an error

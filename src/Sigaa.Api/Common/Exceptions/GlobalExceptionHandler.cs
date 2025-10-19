@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using Sigaa.Api.Common.Scraping.Browsing.Sessions;
+using Sigaa.Api.Common.Scraping.Client.Sessions;
 using Sigaa.Api.Features.Account.Exceptions;
 
 namespace Sigaa.Api.Common.Exceptions;

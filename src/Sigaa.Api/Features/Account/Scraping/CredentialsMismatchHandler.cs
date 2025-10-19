@@ -8,8 +8,7 @@ internal sealed class CredentialsMismatchHandler : ILoginResponseHandler
 {
     public bool Evaluate(IDocument document) => document.Url.AbsoluteUri.Contains("logon.jsf");
 
-    public Task<User> HandleAsync(ISession session,
-        IDocument document,
+    public Task<User> HandleAsync(IDocument document,
         string? enrollment = null,
         CancellationToken cancellationToken = default) => throw new InvalidCredentialsException();
 }

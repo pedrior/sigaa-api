@@ -24,20 +24,15 @@ internal sealed class MultipleEnrollmentHandler : ILoginResponseHandler
         return isEnrollmentSelectorDocument || isMultipleEnrollment;
     }
 
-    public async Task<User> HandleAsync(ISession session,
-        IDocument document,
+    public async Task<User> HandleAsync(IDocument document,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
     {
-        var enrollments = await enrollmentProvider.ListEnrollmentsAsync(session, cancellationToken);
+        var enrollments = await enrollmentProvider.ListEnrollmentsAsync(cancellationToken);
         var enrollmentsArray = enrollments as Enrollment[] ?? enrollments.ToArray();
 
         var enrollmentToSelect = FindEnrollmentToSelect(enrollmentsArray, enrollment);
-        var user = await enrollmentSelector.SelectAsync(
-            session,
-            enrollmentToSelect,
-            enrollmentsArray,
-            cancellationToken);
+        var user = await enrollmentSelector.SelectAsync(enrollmentToSelect, enrollmentsArray, cancellationToken);
 
         return user;
     }

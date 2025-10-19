@@ -2,7 +2,7 @@ using Sigaa.Api.Common.Caching;
 using Sigaa.Api.Common.Endpoints;
 using Sigaa.Api.Common.Problems;
 using Sigaa.Api.Common.Scraping;
-using Sigaa.Api.Common.Scraping.Browsing;
+using Sigaa.Api.Common.Scraping.Client;
 using Sigaa.Api.Features.Centers.Contracts;
 using Sigaa.Api.Features.Centers.Models;
 using Sigaa.Api.Features.Centers.Scraping;
@@ -32,11 +32,11 @@ internal sealed class GetCenterEndpoint : IEndpoint
     /// <response code="404">Se o centro acadêmico com o ID ou slug especificado não for encontrado.</response>
     internal static async Task<IResult> HandleAsync(string idOrSlug,
         HttpContext context,
-        IResourceLoader resourceLoader,
+        IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        if (await FindCenterAsync(idOrSlug, resourceLoader, scrapingEngine, cancellationToken) is not { } center)
+        if (await FindCenterAsync(idOrSlug, fetcher, scrapingEngine, cancellationToken) is not { } center)
         {
             return idOrSlug.All(char.IsDigit)
                 ? new NotFoundProblem($"Center with ID '{idOrSlug}' was not found.")
@@ -45,7 +45,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
 
         var response = await GetCenterDetailsAsync(
             center,
-            resourceLoader,
+            fetcher,
             scrapingEngine,
             cancellationToken);
 
@@ -53,43 +53,40 @@ internal sealed class GetCenterEndpoint : IEndpoint
     }
 
     private static async Task<Center?> FindCenterAsync(string idOrSlug,
-        IResourceLoader resourceLoader,
+        IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var document = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
-            .WithAnonymousSession(cancellationToken);
-
+        var document = await fetcher.FetchDocumentAsync(CenterPages.CenterList, cancellationToken);
         var centers = await scrapingEngine.ScrapeAllAsync<Center>(document, cancellationToken);
+
         return centers.FirstOrDefault(c => c.Id == idOrSlug || c.Slug == idOrSlug);
     }
 
     private static async Task<CenterDetailsResponse> GetCenterDetailsAsync(Center center,
-        IResourceLoader resourceLoader,
+        IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var centerDocumentTask = resourceLoader.LoadDocumentAsync(CenterPages.GetCenter(center.Id))
-            .WithAnonymousSession(cancellationToken)
-            .AsTask();
+        var centerDocumentTask = fetcher.FetchDocumentAsync(
+            CenterPages.GetCenter(center.Id),
+            cancellationToken).AsTask();
 
-        var departmentsDocumentTask = resourceLoader.LoadDocumentAsync(CenterPages.GetDepartments(center.Id))
-            .WithAnonymousSession(cancellationToken)
-            .AsTask();
+        var departmentsDocumentTask = fetcher.FetchDocumentAsync(
+            CenterPages.GetDepartments(center.Id),
+            cancellationToken).AsTask();
 
-        var undergraduateProgramsDocumentTask = resourceLoader.LoadDocumentAsync(
-                CenterPages.GetUndergraduatePrograms(center.Id))
-            .WithAnonymousSession(cancellationToken)
-            .AsTask();
+        var undergraduateProgramsDocumentTask = fetcher.FetchDocumentAsync(
+            CenterPages.GetUndergraduatePrograms(center.Id),
+            cancellationToken).AsTask();
 
-        var postgraduateProgramsDocumentTask = resourceLoader.LoadDocumentAsync(
-                CenterPages.GetPostgraduatePrograms(center.Id))
-            .WithAnonymousSession(cancellationToken)
-            .AsTask();
+        var postgraduateProgramsDocumentTask = fetcher.FetchDocumentAsync(
+            CenterPages.GetPostgraduatePrograms(center.Id),
+            cancellationToken).AsTask();
 
-        var researchesDocumentTask = resourceLoader.LoadDocumentAsync(CenterPages.GetResearches(center.Id))
-            .WithAnonymousSession(cancellationToken)
-            .AsTask();
+        var researchesDocumentTask = fetcher.FetchDocumentAsync(
+            CenterPages.GetResearches(center.Id),
+            cancellationToken).AsTask();
 
         await Task.WhenAll(
             centerDocumentTask,

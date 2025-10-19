@@ -1,7 +1,7 @@
 ﻿using Sigaa.Api.Common.Caching;
 using Sigaa.Api.Common.Endpoints;
 using Sigaa.Api.Common.Scraping;
-using Sigaa.Api.Common.Scraping.Browsing;
+using Sigaa.Api.Common.Scraping.Client;
 using Sigaa.Api.Features.Centers.Contracts;
 using Sigaa.Api.Features.Centers.Models;
 using Sigaa.Api.Features.Centers.Scraping;
@@ -28,14 +28,13 @@ internal sealed class ListCentersEndpoint : IEndpoint
     /// <returns>Uma lista de centros acadêmicos.</returns>
     /// <response code="200">Retorna a lista de centros acadêmicos.</response>
     internal static async Task<IResult> HandleAsync(HttpContext context,
-        IResourceLoader resourceLoader,
+        IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var document = await resourceLoader.LoadDocumentAsync(CenterPages.CenterList)
-            .WithAnonymousSession(cancellationToken);
-
+        var document = await fetcher.FetchDocumentAsync(CenterPages.CenterList, cancellationToken);
         var centers = await scrapingEngine.ScrapeAllAsync<Center>(document, cancellationToken);
+
         var response = centers
             .OrderBy(f => f.Name)
             .Select(f => new CenterResponse

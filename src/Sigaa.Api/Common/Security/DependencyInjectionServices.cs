@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Sigaa.Api.Common.Scraping.Browsing.Sessions;
+using Sigaa.Api.Common.Scraping.Client.Sessions;
+using Sigaa.Api.Common.Scraping.Client.Sessions.Storages;
 using Sigaa.Api.Common.Security.Tokens;
 
 namespace Sigaa.Api.Common.Security;
@@ -47,12 +48,24 @@ internal static class DependencyInjectionServices
                 {
                     OnTokenValidated = async context =>
                     {
-                        var sid = context.Principal!.Claims.First(c => c.Type is JwtRegisteredClaimNames.Sid);
-                        var sessionManager = context.HttpContext.RequestServices.GetRequiredService<ISessionManager>();
+                        var sessionId = context.Principal?.Claims
+                            .First(x => x.Type is PersistentSessionStorage.SessionIdClaimType).Value;
 
-                        if (!await sessionManager.ValidateSessionAsync(sid.Value))
+                        if (sessionId is null)
                         {
-                            context.Fail("Session is no longer valid. Please login again.");
+                            context.Fail("Session ID not found");
+                            return;
+                        }
+
+                        var sessionDetailsAccessor = context.HttpContext.RequestServices
+                            .GetRequiredService<ISessionDetailsAccessor>();
+
+                        var sessionDetails = await sessionDetailsAccessor.GetSessionDetailsAsync(sessionId,
+                            context.HttpContext.RequestAborted);
+
+                        if (sessionDetails is null || sessionDetails.IsExpired())
+                        {
+                            context.Fail("Session expired");
                         }
                     }
                 };

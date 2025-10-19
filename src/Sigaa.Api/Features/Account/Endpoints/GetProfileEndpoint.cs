@@ -2,7 +2,7 @@
 using Sigaa.Api.Common.Endpoints;
 using Sigaa.Api.Common.RateLimiting;
 using Sigaa.Api.Common.Scraping;
-using Sigaa.Api.Common.Scraping.Browsing;
+using Sigaa.Api.Common.Scraping.Client;
 using Sigaa.Api.Common.Security;
 using Sigaa.Api.Features.Account.Contracts;
 using Sigaa.Api.Features.Account.Models;
@@ -32,15 +32,16 @@ internal sealed class GetProfileEndpoint : IEndpoint
     /// <response code="200">Retorna as informações do perfil do estudante.</response>
     /// <response code="401">Usuário não autenticado.</response>
     internal static async Task<IResult> HandleAsync(HttpContext context,
-        IResourceLoader resourceLoader,
+        IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         IUserContext userContext,
         CancellationToken cancellationToken)
     {
-        var document = await resourceLoader.LoadDocumentAsync(AccountPages.Profile)
-            .WithUserSession(cancellationToken);
-
+        var document = await fetcher.FetchDocumentAsync(AccountPages.Profile, cancellationToken)
+            .WithPersistentSession();
+        
         var profile = scrapingEngine.Scrape<Profile>(document);
+        
         var response = new ProfileResponse
         {
             Name = profile.Name,

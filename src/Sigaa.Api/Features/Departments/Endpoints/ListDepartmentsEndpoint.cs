@@ -1,7 +1,7 @@
 ﻿using Sigaa.Api.Common.Caching;
 using Sigaa.Api.Common.Endpoints;
 using Sigaa.Api.Common.Scraping;
-using Sigaa.Api.Common.Scraping.Browsing;
+using Sigaa.Api.Common.Scraping.Client;
 using Sigaa.Api.Features.Departments.Contracts;
 using Sigaa.Api.Features.Departments.Models;
 using Sigaa.Api.Features.Departments.Scraping;
@@ -28,14 +28,14 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
     /// <returns>Uma lista de departamentos.</returns>
     /// <response code="200">Retorna a lista de departamentos.</response>
     internal static async Task<IResult> HandleAsync(HttpContext context,
-        IResourceLoader resourceLoader,
+        IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var form = await GetDepartmentListingFormAsync(resourceLoader, scrapingEngine, cancellationToken);
-        var document = await resourceLoader.LoadDocumentAsync(form.Action)
+        var form = await GetDepartmentListingFormAsync(fetcher, scrapingEngine, cancellationToken);
+        var document = await fetcher.FetchDocumentAsync(form.Action, cancellationToken)
             .WithFormData(form.BuildSubmissionData())
-            .WithContextualSession(cancellationToken);
+            .WithEphemeralSession();
 
         var centers = await scrapingEngine.ScrapeAllAsync<DepartmentCenter>(document, cancellationToken);
         var departments = await scrapingEngine.ScrapeAllAsync<Department>(document, cancellationToken);
@@ -57,12 +57,12 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
         return Results.Ok(response);
     }
 
-    private static async Task<DepartmentListingForm> GetDepartmentListingFormAsync(IResourceLoader resourceLoader,
+    private static async Task<DepartmentListingForm> GetDepartmentListingFormAsync(IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         CancellationToken cancellationToken)
     {
-        var document = await resourceLoader.LoadDocumentAsync(DepartmentPages.Listing)
-            .WithContextualSession(cancellationToken);
+        var document = await fetcher.FetchDocumentAsync(DepartmentPages.Listing, cancellationToken)
+            .WithEphemeralSession();
 
         return scrapingEngine.Scrape<DepartmentListingForm>(document);
     }

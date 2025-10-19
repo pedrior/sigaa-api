@@ -4,8 +4,7 @@ namespace Sigaa.Api.Features.Account.Scraping;
 
 internal interface IEnrollmentSelector
 {
-    Task<User> SelectAsync(ISession session,
-        Enrollment enrollment,
+    Task<User> SelectAsync(Enrollment enrollment,
         IEnumerable<Enrollment> enrollments,
         CancellationToken cancellationToken = default);
 }

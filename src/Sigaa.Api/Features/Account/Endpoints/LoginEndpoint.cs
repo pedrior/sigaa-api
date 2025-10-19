@@ -1,8 +1,7 @@
 ﻿using Sigaa.Api.Common.Endpoints;
 using Sigaa.Api.Common.RateLimiting;
 using Sigaa.Api.Common.Scraping;
-using Sigaa.Api.Common.Scraping.Browsing;
-using Sigaa.Api.Common.Scraping.Browsing.Sessions;
+using Sigaa.Api.Common.Scraping.Client;
 using Sigaa.Api.Common.Scraping.Document;
 using Sigaa.Api.Common.Security.Tokens;
 using Sigaa.Api.Features.Account.Contracts;
@@ -23,7 +22,7 @@ internal sealed class LoginEndpoint : IEndpoint
             .Produces<LoginResponse>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
     }
-    
+
     /// <summary>
     /// Autentica um estudante e retorna um token de acesso (Login).
     /// </summary>
@@ -42,35 +41,31 @@ internal sealed class LoginEndpoint : IEndpoint
     /// <response code="401">Credenciais inválidas (usuário/senha) ou matrícula não encontrada para o usuário.</response>
     internal static async Task<IResult> HandleAsync(LoginRequest request,
         HttpContext context,
-        IResourceLoader resourceLoader,
+        IFetcher fetcher,
         IScrapingEngine scrapingEngine,
         IEnumerable<ILoginResponseHandler> responseHandlers,
         ISecurityTokenProvider securityTokenProvider,
-        ISessionManager sessionManager,
         CancellationToken cancellationToken)
     {
-        var session = sessionManager.CreateSession();
-
-        var loginDocument = await resourceLoader.LoadDocumentAsync(AccountPages.Login)
-            .WithSession(session, cancellationToken);
+        var sessionId = $"{Guid.NewGuid()}";
+        var loginDocument = await fetcher.FetchDocumentAsync(AccountPages.Login, cancellationToken)
+            .WithPersistentSession()
+            .AllowSessionCreation(sessionId);
 
         var loginForm = scrapingEngine.Scrape<LoginForm>(loginDocument);
         var loginFormData = loginForm.PrepareForSubmission(request.Username, request.Password);
-        var loginResponseDocument = await resourceLoader.LoadDocumentAsync(loginForm.Action)
+        var loginResponseDocument = await fetcher.FetchDocumentAsync(loginForm.Action, cancellationToken)
             .WithFormData(loginFormData)
-            .WithSession(session, cancellationToken);
+            .WithPersistentSession();
 
         var user = await HandleLoginResponseAsync(
-            session,
             loginResponseDocument,
             responseHandlers,
             request.Enrollment,
             cancellationToken);
-
-        await sessionManager.SaveSessionAsync(session, cancellationToken);
-
+        
         var response = CreateAccessToken(
-            session.Id,
+            sessionId,
             request.Username,
             user.Enrollment,
             user.Enrollments,
@@ -78,9 +73,8 @@ internal sealed class LoginEndpoint : IEndpoint
 
         return Results.Ok(response);
     }
-
-    private static Task<User> HandleLoginResponseAsync(ISession session,
-        IDocument document,
+    
+    private static Task<User> HandleLoginResponseAsync(IDocument document,
         IEnumerable<ILoginResponseHandler> handlers,
         string? enrollment = null,
         CancellationToken cancellationToken = default)
@@ -88,7 +82,7 @@ internal sealed class LoginEndpoint : IEndpoint
         var handler = handlers.FirstOrDefault(strategy => strategy.Evaluate(document));
         return handler is null
             ? throw new LoginException($"No login response handler found for page {document.Url}.")
-            : handler.HandleAsync(session, document, enrollment, cancellationToken);
+            : handler.HandleAsync(document, enrollment, cancellationToken);
     }
 
     private static LoginResponse CreateAccessToken(string sessionId,

@@ -7,8 +7,7 @@ internal interface ILoginResponseHandler
 {
     bool Evaluate(IDocument document);
 
-    Task<User> HandleAsync(ISession session,
-        IDocument document,
+    Task<User> HandleAsync(IDocument document,
         string? enrollment = null,
         CancellationToken cancellationToken = default);
 }

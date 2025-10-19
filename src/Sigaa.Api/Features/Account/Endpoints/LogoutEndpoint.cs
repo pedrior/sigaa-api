@@ -1,8 +1,7 @@
 ﻿using Sigaa.Api.Common.Endpoints;
 using Sigaa.Api.Common.RateLimiting;
-using Sigaa.Api.Common.Scraping.Browsing;
-using Sigaa.Api.Common.Scraping.Browsing.Sessions;
-using Sigaa.Api.Common.Security;
+using Sigaa.Api.Common.Scraping.Client;
+using Sigaa.Api.Common.Scraping.Client.Sessions;
 using Sigaa.Api.Features.Account.Scraping;
 
 namespace Sigaa.Api.Features.Account.Endpoints;
@@ -28,15 +27,14 @@ internal sealed class LogoutEndpoint : IEndpoint
     /// <response code="204">Sessão encerrada com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
     internal static async Task<IResult> HandleAsync(HttpContext context,
-        IResourceLoader resourceLoader,
-        IUserContext userContext,
-        ISessionManager sessionManager,
+        IFetcher fetcher,
+        ISessionRevoker sessionRevoker,
         CancellationToken cancellationToken)
     {
-        await resourceLoader.LoadDocumentAsync(AccountPages.Logout)
-            .WithUserSession(cancellationToken);
+        await fetcher.FetchDocumentAsync(AccountPages.Logout, cancellationToken)
+            .WithPersistentSession();
 
-        await sessionManager.RevokeSessionAsync(userContext.SessionId, cancellationToken);
+        await sessionRevoker.RevokeAsync(cancellationToken);
 
         return Results.NoContent();
     }
