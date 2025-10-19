@@ -23,7 +23,8 @@ internal sealed class ProfileConfiguration : IScrapingModelConfiguration<Profile
 
         builder.Value(s => s.IsProgramCompletionAvailable)
             .WithSelector("a[href*='integralizacao']")
-            .WithConversion(s => !string.IsNullOrEmpty(s));
+            .WithConversion(s => !string.IsNullOrEmpty(s))
+            .IsOptional();
 
         builder.Value(s => s.Photo)
             .WithSelector("img[class*='fotoPerfil']")
