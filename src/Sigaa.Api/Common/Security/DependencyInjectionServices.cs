@@ -15,7 +15,7 @@ internal static class DependencyInjectionServices
         builder.Services.AddScoped<IUserContext, UserContext>();
         builder.Services.AddTransient<ISecurityTokenProvider, SecurityTokenProvider>();
 
-        var jwtConfig = builder.Configuration.GetRequiredSection("Jwt");
+        var jwtConfig = builder.Configuration.GetRequiredSection(SecurityTokenOptions.SectionName);
         builder.Services.AddOptionsWithValidateOnStart<SecurityTokenOptions>()
             .Bind(jwtConfig)
             .ValidateDataAnnotations();
