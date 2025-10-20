@@ -24,7 +24,7 @@ internal static class ApplicationExtensions
             options.WithTitle("SIGAA UFPB API")
                 .WithTheme(ScalarTheme.Default)
                 .WithDynamicBaseServerUrl()
-                .WithSchemaPropertyOrder(PropertyOrder.Preserve)
+                .PreserveSchemaPropertyOrder()
                 .WithDefaultHttpClient(ScalarTarget.Node, ScalarClient.Axios);
         });
 
