@@ -29,16 +29,16 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
     /// <response code="200">Retorna a lista de departamentos.</response>
     internal static async Task<IResult> HandleAsync(HttpContext context,
         IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         CancellationToken cancellationToken)
     {
-        var form = await GetDepartmentListingFormAsync(fetcher, scrapingEngine, cancellationToken);
+        var form = await GetDepartmentListingFormAsync(fetcher, scraper, cancellationToken);
         var document = await fetcher.FetchDocumentAsync(form.Action, cancellationToken)
             .WithFormData(form.BuildSubmissionData())
             .WithEphemeralSession();
 
-        var centers = await scrapingEngine.ScrapeAllAsync<DepartmentCenter>(document, cancellationToken);
-        var departments = await scrapingEngine.ScrapeAllAsync<Department>(document, cancellationToken);
+        var centers = await scraper.ScrapeAllAsync<DepartmentCenter>(document, cancellationToken);
+        var departments = await scraper.ScrapeAllAsync<Department>(document, cancellationToken);
 
         var response = departments.Join(
                 inner: centers,
@@ -58,12 +58,12 @@ internal sealed class ListDepartmentsEndpoint : IEndpoint
     }
 
     private static async Task<DepartmentListingForm> GetDepartmentListingFormAsync(IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         CancellationToken cancellationToken)
     {
         var document = await fetcher.FetchDocumentAsync(DepartmentPages.Listing, cancellationToken)
             .WithEphemeralSession();
 
-        return scrapingEngine.Scrape<DepartmentListingForm>(document);
+        return scraper.Scrape<DepartmentListingForm>(document);
     }
 }

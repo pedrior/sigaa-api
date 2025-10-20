@@ -10,14 +10,14 @@ namespace Sigaa.Api.UnitTests.Features.Account.Scraping;
 public class EnrollmentProviderTest
 {
     private readonly IFetcher fetcher;
-    private readonly IScrapingEngine scrapingEngine;
+    private readonly IScraper scraper;
     private readonly EnrollmentProvider enrollmentProvider;
 
     public EnrollmentProviderTest()
     {
         fetcher = A.Fake<IFetcher>();
-        scrapingEngine = A.Fake<IScrapingEngine>();
-        enrollmentProvider = new EnrollmentProvider(fetcher, scrapingEngine);
+        scraper = A.Fake<IScraper>();
+        enrollmentProvider = new EnrollmentProvider(fetcher, scraper);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class EnrollmentProviderTest
             ]
         };
 
-        A.CallTo(() => scrapingEngine.Scrape<UserEnrollments>(document)).Returns(enrollments);
+        A.CallTo(() => scraper.Scrape<UserEnrollments>(document)).Returns(enrollments);
 
         // Act
         var result = (await enrollmentProvider.ListEnrollmentsAsync()).ToList();

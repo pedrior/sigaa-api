@@ -6,21 +6,21 @@ using Sigaa.Api.Common.Scraping.Document;
 
 namespace Sigaa.Api.UnitTests.Common.Scraping;
 
-[TestSubject(typeof(ScrapingEngine))]
-public sealed class ScrapingEngineTest
+[TestSubject(typeof(Scraper))]
+public sealed class ScraperTest
 {
     private readonly IModelScraperFactory modelScraperFactory;
     private readonly IScrapingModelConfigurationProvider configProvider;
     private readonly IElement rootElement;
-    private readonly ScrapingEngine sut;
+    private readonly Scraper sut;
 
-    public ScrapingEngineTest()
+    public ScraperTest()
     {
         modelScraperFactory = A.Fake<IModelScraperFactory>();
         configProvider = A.Fake<IScrapingModelConfigurationProvider>();
         rootElement = A.Fake<IElement>();
 
-        sut = new ScrapingEngine(A.Fake<ILogger<ScrapingEngine>>(), modelScraperFactory, configProvider);
+        sut = new Scraper(A.Fake<ILogger<Scraper>>(), modelScraperFactory, configProvider);
     }
 
     [Fact]

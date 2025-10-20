@@ -2,7 +2,7 @@
 
 namespace Sigaa.Api.Common.Scraping;
 
-internal interface IScrapingEngine
+internal interface IScraper
 {
     TModel Scrape<TModel>(IElement root) where TModel : class, new();
 

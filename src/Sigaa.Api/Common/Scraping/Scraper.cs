@@ -3,13 +3,13 @@ using Sigaa.Api.Common.Scraping.Document;
 
 namespace Sigaa.Api.Common.Scraping;
 
-internal sealed class ScrapingEngine : IScrapingEngine
+internal sealed class Scraper : IScraper
 {
-    private readonly ILogger<ScrapingEngine> logger;
+    private readonly ILogger<Scraper> logger;
     private readonly IModelScraperFactory modelScraperFactory;
     private readonly IScrapingModelConfigurationProvider configProvider;
 
-    public ScrapingEngine(ILogger<ScrapingEngine> logger,
+    public Scraper(ILogger<Scraper> logger,
         IModelScraperFactory modelScraperFactory,
         IScrapingModelConfigurationProvider configProvider)
     {

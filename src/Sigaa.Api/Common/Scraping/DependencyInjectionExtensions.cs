@@ -27,7 +27,7 @@ internal static class ScrapingServicesExtensions
 
     private static void RegisterCoreScrapingServices(this IServiceCollection services)
     {
-        services.AddSingleton<IScrapingEngine, ScrapingEngine>();
+        services.AddSingleton<IScraper, Scraper>();
         services.AddSingleton<IConversionService, ConversionService>();
         services.AddSingleton<IHtmlParser, HtmlParser>();
     }

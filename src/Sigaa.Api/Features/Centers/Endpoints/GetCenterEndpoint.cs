@@ -33,10 +33,10 @@ internal sealed class GetCenterEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(string idOrSlug,
         HttpContext context,
         IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         CancellationToken cancellationToken)
     {
-        if (await FindCenterAsync(idOrSlug, fetcher, scrapingEngine, cancellationToken) is not { } center)
+        if (await FindCenterAsync(idOrSlug, fetcher, scraper, cancellationToken) is not { } center)
         {
             return idOrSlug.All(char.IsDigit)
                 ? new NotFoundProblem($"Center with ID '{idOrSlug}' was not found.")
@@ -46,7 +46,7 @@ internal sealed class GetCenterEndpoint : IEndpoint
         var response = await GetCenterDetailsAsync(
             center,
             fetcher,
-            scrapingEngine,
+            scraper,
             cancellationToken);
 
         return Results.Ok(response);
@@ -54,18 +54,18 @@ internal sealed class GetCenterEndpoint : IEndpoint
 
     private static async Task<Center?> FindCenterAsync(string idOrSlug,
         IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         CancellationToken cancellationToken)
     {
         var document = await fetcher.FetchDocumentAsync(CenterPages.CenterList, cancellationToken);
-        var centers = await scrapingEngine.ScrapeAllAsync<Center>(document, cancellationToken);
+        var centers = await scraper.ScrapeAllAsync<Center>(document, cancellationToken);
 
         return centers.FirstOrDefault(c => c.Id == idOrSlug || c.Slug == idOrSlug);
     }
 
     private static async Task<CenterDetailsResponse> GetCenterDetailsAsync(Center center,
         IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         CancellationToken cancellationToken)
     {
         var centerDocumentTask = fetcher.FetchDocumentAsync(
@@ -101,19 +101,19 @@ internal sealed class GetCenterEndpoint : IEndpoint
         var postgraduateProgramsDocument = postgraduateProgramsDocumentTask.Result;
         var researchesDocument = researchesDocumentTask.Result;
 
-        var details = scrapingEngine.Scrape<CenterDetails>(centerDocument);
+        var details = scraper.Scrape<CenterDetails>(centerDocument);
 
-        var departmentsTask = scrapingEngine.ScrapeAllAsync<Department>(departmentsDocument, cancellationToken);
+        var departmentsTask = scraper.ScrapeAllAsync<Department>(departmentsDocument, cancellationToken);
 
-        var undergraduateProgramsTask = scrapingEngine.ScrapeAllAsync<UndergraduateProgram>(
+        var undergraduateProgramsTask = scraper.ScrapeAllAsync<UndergraduateProgram>(
             undergraduateProgramsDocument,
             cancellationToken);
 
-        var postgraduateProgramsTask = scrapingEngine.ScrapeAllAsync<GraduateProgram>(
+        var postgraduateProgramsTask = scraper.ScrapeAllAsync<GraduateProgram>(
             postgraduateProgramsDocument,
             cancellationToken);
 
-        var researchesTask = scrapingEngine.ScrapeAllAsync<Research>(researchesDocument, cancellationToken);
+        var researchesTask = scraper.ScrapeAllAsync<Research>(researchesDocument, cancellationToken);
 
         await Task.WhenAll(departmentsTask, undergraduateProgramsTask, postgraduateProgramsTask, researchesTask);
 

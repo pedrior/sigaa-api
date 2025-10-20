@@ -42,7 +42,7 @@ internal sealed class LoginEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(LoginRequest request,
         HttpContext context,
         IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         IEnumerable<ILoginResponseHandler> responseHandlers,
         ISecurityTokenProvider securityTokenProvider,
         CancellationToken cancellationToken)
@@ -52,7 +52,7 @@ internal sealed class LoginEndpoint : IEndpoint
             .WithPersistentSession()
             .AllowSessionCreation(sessionId);
 
-        var loginForm = scrapingEngine.Scrape<LoginForm>(loginDocument);
+        var loginForm = scraper.Scrape<LoginForm>(loginDocument);
         var loginFormData = loginForm.PrepareForSubmission(request.Username, request.Password);
         var loginResponseDocument = await fetcher.FetchDocumentAsync(loginForm.Action, cancellationToken)
             .WithFormData(loginFormData)

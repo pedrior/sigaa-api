@@ -33,14 +33,14 @@ internal sealed class GetProfileEndpoint : IEndpoint
     /// <response code="401">Usuário não autenticado.</response>
     internal static async Task<IResult> HandleAsync(HttpContext context,
         IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         IUserContext userContext,
         CancellationToken cancellationToken)
     {
         var document = await fetcher.FetchDocumentAsync(AccountPages.Profile, cancellationToken)
             .WithPersistentSession();
         
-        var profile = scrapingEngine.Scrape<Profile>(document);
+        var profile = scraper.Scrape<Profile>(document);
         
         var response = new ProfileResponse
         {

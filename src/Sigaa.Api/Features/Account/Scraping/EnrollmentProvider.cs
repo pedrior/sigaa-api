@@ -7,12 +7,12 @@ namespace Sigaa.Api.Features.Account.Scraping;
 internal sealed class EnrollmentProvider : IEnrollmentProvider
 {
     private readonly IFetcher fetcher;
-    private readonly IScrapingEngine scrapingEngine;
+    private readonly IScraper scraper;
 
-    public EnrollmentProvider(IFetcher fetcher, IScrapingEngine scrapingEngine)
+    public EnrollmentProvider(IFetcher fetcher, IScraper scraper)
     {
         this.fetcher = fetcher;
-        this.scrapingEngine = scrapingEngine;
+        this.scraper = scraper;
     }
 
     public async Task<IEnumerable<Enrollment>> ListEnrollmentsAsync(CancellationToken cancellationToken = default)
@@ -20,7 +20,7 @@ internal sealed class EnrollmentProvider : IEnrollmentProvider
         var document = await fetcher.FetchDocumentAsync(AccountPages.EnrollmentSelector, cancellationToken)
             .WithPersistentSession();
 
-        var enrollments = scrapingEngine.Scrape<UserEnrollments>(document);
+        var enrollments = scraper.Scrape<UserEnrollments>(document);
         return enrollments.Active
             .Concat(enrollments.Inactive)
             .Select(ApplyCommonEnrollmentData);

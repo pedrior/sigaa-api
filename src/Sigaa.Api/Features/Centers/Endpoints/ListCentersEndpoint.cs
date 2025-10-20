@@ -29,11 +29,11 @@ internal sealed class ListCentersEndpoint : IEndpoint
     /// <response code="200">Retorna a lista de centros acadêmicos.</response>
     internal static async Task<IResult> HandleAsync(HttpContext context,
         IFetcher fetcher,
-        IScrapingEngine scrapingEngine,
+        IScraper scraper,
         CancellationToken cancellationToken)
     {
         var document = await fetcher.FetchDocumentAsync(CenterPages.CenterList, cancellationToken);
-        var centers = await scrapingEngine.ScrapeAllAsync<Center>(document, cancellationToken);
+        var centers = await scraper.ScrapeAllAsync<Center>(document, cancellationToken);
 
         var response = centers
             .OrderBy(f => f.Name)
