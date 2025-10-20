@@ -26,7 +26,7 @@ internal sealed class ProfileConfiguration : IScrapingModelConfiguration<Profile
             .WithConversion(s => !string.IsNullOrEmpty(s))
             .IsOptional();
 
-        builder.Value(s => s.Photo)
+        builder.Value(s => s.PhotoUrl)
             .WithSelector("img[class*='fotoPerfil']")
             .WithAttribute("src")
             .IsOptional();

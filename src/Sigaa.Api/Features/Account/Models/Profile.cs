@@ -11,7 +11,7 @@ internal sealed class Profile
 
     public bool IsProgramCompletionAvailable { get; set; }
 
-    public string? Photo { get; set; }
+    public string? PhotoUrl { get; set; }
 
     public string? Biography { get; set; }
 

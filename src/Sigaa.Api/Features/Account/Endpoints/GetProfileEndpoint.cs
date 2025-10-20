@@ -52,7 +52,7 @@ internal sealed class GetProfileEndpoint : IEndpoint
                 ? ProgramType.Undergraduate
                 : ProgramType.Postgraduate,
             Enrollments = user.Enrollments,
-            Photo = profile.Photo,
+            PhotoUrl = profile.PhotoUrl,
             Biography = profile.Biography,
             Interests = profile.Interests,
             Curriculum = profile.Curriculum,

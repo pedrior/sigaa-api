@@ -47,8 +47,8 @@ internal sealed record ProfileResponse
     /// <summary>
     /// A URL para a foto de perfil do estudante. Pode ser nulo se não houver foto.
     /// </summary>
-    [JsonPropertyName("foto")]
-    public string? Photo { get; init; }
+    [JsonPropertyName("foto_url")]
+    public string? PhotoUrl { get; init; }
 
     /// <summary>
     /// A biografia ou descrição pessoal do estudante. Pode ser nulo.
