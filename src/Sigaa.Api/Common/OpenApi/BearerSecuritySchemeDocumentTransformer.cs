@@ -43,7 +43,9 @@ internal sealed class BearerSecuritySchemeDocumentTransformer : IOpenApiDocument
         var securityRequirement = new OpenApiSecurityRequirement
         {
             {
-                new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme),
+                new OpenApiSecuritySchemeReference(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    hostDocument: document),
                 [] // The list of scopes is empty for Bearer JWT.
             }
         };
