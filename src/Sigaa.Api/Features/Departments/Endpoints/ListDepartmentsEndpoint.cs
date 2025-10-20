@@ -11,9 +11,9 @@ namespace Sigaa.Api.Features.Departments.Endpoints;
 [UsedImplicitly]
 internal sealed class ListDepartmentsEndpoint : IEndpoint
 {
-    public static void Map(IEndpointRouteBuilder builder)
+    public static void Map(IEndpointRouteBuilder route)
     {
-        builder.MapGet("/", HandleAsync)
+        route.MapGet("/", HandleAsync)
             .CacheOutput(CachePolicies.Departments.ListDepartments)
             .Produces<IEnumerable<DepartmentResponse>>();
     }
