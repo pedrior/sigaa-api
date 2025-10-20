@@ -13,6 +13,7 @@ internal static class DependencyInjection
             ConfigureBaselineCache(options);
             ConfigureAccountCachePolicies(options);
             ConfigureCentersCachePolicies(options);
+            ConfigureDepartmentsCachePolicies(options);
         });
         
         return builder;
@@ -41,6 +42,14 @@ internal static class DependencyInjection
             name: CachePolicies.Centers.GetCenter,
             builder => builder.Expire(TimeSpan.FromHours(12))
                 .SetVaryByRouteValue("idOrSlug"),
+            excludeDefaultPolicy: true);
+    }
+    
+    private static void ConfigureDepartmentsCachePolicies(OutputCacheOptions options)
+    {
+        options.AddPolicy(
+            name: CachePolicies.Departments.ListDepartments,
+            builder => builder.Expire(TimeSpan.FromHours(24)),
             excludeDefaultPolicy: true);
     }
 }
