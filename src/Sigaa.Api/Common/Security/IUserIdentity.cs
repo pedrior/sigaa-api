@@ -1,6 +1,6 @@
 ﻿namespace Sigaa.Api.Common.Security;
 
-internal interface IUserContext
+internal interface IUserIdentity
 {
     string Username { get; }
 

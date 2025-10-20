@@ -12,7 +12,7 @@ internal static class DependencyInjectionServices
     {
         builder.Services.AddDataProtection();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<IUserContext, UserContext>();
+        builder.Services.AddScoped<IUserIdentity, UserIdentity>();
         builder.Services.AddTransient<ISecurityTokenProvider, SecurityTokenProvider>();
 
         var jwtConfig = builder.Configuration.GetRequiredSection(SecurityTokenOptions.SectionName);

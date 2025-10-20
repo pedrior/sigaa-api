@@ -34,7 +34,7 @@ internal sealed class GetProfileEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(HttpContext context,
         IFetcher fetcher,
         IScraper scraper,
-        IUserContext userContext,
+        IUserIdentity user,
         CancellationToken cancellationToken)
     {
         var document = await fetcher.FetchDocumentAsync(AccountPages.Profile, cancellationToken)
@@ -46,12 +46,12 @@ internal sealed class GetProfileEndpoint : IEndpoint
         {
             Name = profile.Name,
             Email = profile.Email,
-            Username = userContext.Username,
-            Enrollment = userContext.Enrollment,
+            Username = user.Username,
+            Enrollment = user.Enrollment,
             ProgramType = profile.IsProgramCompletionAvailable
                 ? ProgramType.Undergraduate
                 : ProgramType.Postgraduate,
-            Enrollments = userContext.Enrollments,
+            Enrollments = user.Enrollments,
             Photo = profile.Photo,
             Biography = profile.Biography,
             Interests = profile.Interests,

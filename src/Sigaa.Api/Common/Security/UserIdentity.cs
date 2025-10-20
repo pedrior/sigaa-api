@@ -3,9 +3,9 @@ using Sigaa.Api.Common.Security.Tokens;
 
 namespace Sigaa.Api.Common.Security;
 
-internal sealed class UserContext : IUserContext
+internal sealed class UserIdentity : IUserIdentity
 {
-    public UserContext(IHttpContextAccessor httpContextAccessor)
+    public UserIdentity(IHttpContextAccessor httpContextAccessor)
     {
         var user = httpContextAccessor.HttpContext?.User;
         if (user is null or { Identity: null or { IsAuthenticated: false } })
