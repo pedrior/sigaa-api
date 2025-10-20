@@ -7,6 +7,4 @@ internal interface IUserContext
     string Enrollment { get; }
     
     string[] Enrollments { get; }
-    
-    string SessionId { get; }
 }

@@ -22,13 +22,10 @@ internal sealed class UserContext : IUserContext
 
     public string[] Enrollments { get; private set; } = [];
 
-    public string SessionId { get; private set; } = string.Empty;
-
     private void ReadClaimValues(ClaimsPrincipal user)
     {
         Username = user.FindFirstValue(CustomClaimTypes.Username)!;
         Enrollment = user.FindFirstValue(CustomClaimTypes.Enrollment)!;
-        SessionId = user.FindFirstValue(JwtRegisteredClaimNames.Sid)!;
         Enrollments = user.FindAll(CustomClaimTypes.Enrollments)
             .Select(c => c.Value)
             .ToArray();
