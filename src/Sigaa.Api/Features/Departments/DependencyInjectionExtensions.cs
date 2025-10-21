@@ -17,6 +17,8 @@ internal static class DependencyInjection
     {
         services.AddSingleton<IScrapingModelConfiguration<Department>, DepartmentConfiguration>();
         services.AddSingleton<IScrapingModelConfiguration<DepartmentCenter>, DepartmentCenterConfiguration>();
+        services.AddSingleton<IScrapingModelConfiguration<DepartmentDetails>, DepartmentDetailsConfiguration>();
         services.AddSingleton<IScrapingModelConfiguration<DepartmentListingForm>, DepartmentListingFormConfiguration>();
+        services.AddSingleton<IScrapingModelConfiguration<DepartmentEntry>, DepartmentEntryConfiguration>();
     }
 }

@@ -51,5 +51,11 @@ internal static class DependencyInjection
             name: CachePolicies.Departments.ListDepartments,
             builder => builder.Expire(TimeSpan.FromHours(24)),
             excludeDefaultPolicy: true);
+        
+        options.AddPolicy(
+            name: CachePolicies.Departments.GetDepartment,
+            builder => builder.Expire(TimeSpan.FromHours(12))
+                .SetVaryByRouteValue("code"),
+            excludeDefaultPolicy: true);
     }
 }

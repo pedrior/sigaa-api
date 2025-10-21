@@ -16,6 +16,8 @@ internal static class CachePolicies
 
     internal static class Departments
     {
+        public const string GetDepartment = "departments:get";
+        
         public const string ListDepartments = "departments:list";
     }
 }

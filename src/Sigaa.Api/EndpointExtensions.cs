@@ -47,7 +47,8 @@ internal static class EndpointExtensions
         var group = route.MapPublicGroup("departamentos")
             .WithTags(AcademicDepartmentTag);
 
-        group.MapEndpoint<ListDepartmentsEndpoint>();
+        group.MapEndpoint<GetDepartmentEndpoint>()
+            .MapEndpoint<ListDepartmentsEndpoint>();
     }
 
     private static RouteGroupBuilder MapPublicGroup(this IEndpointRouteBuilder route, string? prefix = null) =>
