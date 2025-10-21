@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
-namespace Sigaa.Api.Common.OpenApi;
+namespace Sigaa.Api.OpenApi;
 
 internal static class DependencyInjectionExtensions
 {

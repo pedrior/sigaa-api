@@ -1,13 +1,13 @@
 using Serilog;
 using Sigaa.Api;
 using Sigaa.Api.Common.Caching;
-using Sigaa.Api.Common.OpenApi;
 using Sigaa.Api.Common.RateLimiting;
 using Sigaa.Api.Common.Scraping;
 using Sigaa.Api.Common.Security;
 using Sigaa.Api.Features.Account;
 using Sigaa.Api.Features.Centers;
 using Sigaa.Api.Features.Departments;
+using Sigaa.Api.OpenApi;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

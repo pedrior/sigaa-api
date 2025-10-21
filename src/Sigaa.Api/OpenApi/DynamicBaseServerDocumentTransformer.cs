@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace Sigaa.Api.Common.OpenApi;
+namespace Sigaa.Api.OpenApi;
 
 internal sealed class DynamicBaseServerDocumentTransformer : IOpenApiDocumentTransformer
 {
