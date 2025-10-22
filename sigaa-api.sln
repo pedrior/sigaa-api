@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigaa.Api", "src\Sigaa.Api\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigaa.Api.UnitTests", "tests\Sigaa.Api.UnitTests\Sigaa.Api.UnitTests.csproj", "{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4A34DD00-243D-434D-9069-9B8C815CEFD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,5 +22,6 @@ Global
 		{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C258DDD4-58FA-4BF9-8C0C-4303F39FB6AE} = {4A34DD00-243D-434D-9069-9B8C815CEFD3}
 	EndGlobalSection
 EndGlobal
